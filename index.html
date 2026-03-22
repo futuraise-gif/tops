@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>We Are Tops</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e74c3c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #f5f5f5; color: #333; max-width: 480px; margin: 0 auto;
+  padding-bottom: 100px;
+}
+
+/* Header */
+.header {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white; padding: 16px; text-align: center;
+  position: sticky; top: 0; z-index: 100;
+}
+.header h1 { font-size: 20px; font-weight: 700; }
+.header-logo { height: 40px; margin-bottom: 4px; filter: brightness(0) invert(1); }
+.header .date { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+
+/* 3 Main Menu Buttons */
+.main-menu { padding: 16px; }
+.menu-btn {
+  width: 100%; padding: 20px 16px; margin-bottom: 12px;
+  background: white; border: 2px solid #eee; border-radius: 14px;
+  cursor: pointer; display: flex; align-items: center; gap: 14px;
+  transition: all 0.15s;
+}
+.menu-btn:active { border-color: #e74c3c; transform: scale(0.98); }
+.menu-btn .icon { font-size: 28px; width: 44px; text-align: center; }
+.menu-btn .label { font-size: 16px; font-weight: 600; }
+.menu-btn .sublabel { font-size: 12px; color: #888; margin-top: 2px; }
+.menu-btn .badge {
+  margin-left: auto; background: #e74c3c; color: white; padding: 4px 10px;
+  border-radius: 12px; font-size: 12px; font-weight: 700;
+}
+.menu-btn .badge.done { background: #27ae60; }
+
+/* Bottom nav */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  max-width: 480px; margin: 0 auto;
+  background: white; border-top: 2px solid #eee;
+  display: flex; z-index: 100;
+}
+.nav-btn {
+  flex: 1; padding: 10px 4px; text-align: center;
+  font-size: 11px; font-weight: 600; color: #888;
+  border: none; background: none; cursor: pointer;
+}
+.nav-btn.active { color: #e74c3c; }
+.nav-icon { font-size: 20px; display: block; margin-bottom: 2px; }
+
+/* Pages */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* Back button */
+.back-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 0; margin-bottom: 8px;
+}
+.back-btn {
+  padding: 6px 14px; background: #f0f0f0; border: none; border-radius: 8px;
+  font-size: 14px; font-weight: 600; cursor: pointer; color: #333;
+}
+.back-title { font-size: 18px; font-weight: 700; }
+
+/* Card */
+.card {
+  background: white; border-radius: 12px; padding: 16px;
+  margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.card h3 {
+  font-size: 13px; color: #e74c3c; margin-bottom: 10px;
+  text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700;
+}
+
+/* Input rows */
+.row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+}
+.row:last-child { border-bottom: none; }
+.row-label { font-size: 14px; font-weight: 500; }
+.row-sub { font-size: 11px; color: #999; }
+.row-input {
+  width: 70px; padding: 8px 10px; border: 2px solid #ddd; border-radius: 8px;
+  font-size: 16px; text-align: center; font-weight: 600;
+}
+.row-input:focus { border-color: #e74c3c; outline: none; }
+.row-input.wide { width: 100px; }
+.row-unit { font-size: 11px; color: #999; margin-left: 4px; }
+
+/* Buttons */
+.btn {
+  width: 100%; padding: 16px; border: none; border-radius: 12px;
+  font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 12px;
+  color: white;
+}
+.btn:active { transform: scale(0.98); }
+.btn-green { background: #27ae60; }
+.btn-red { background: #e74c3c; }
+.btn-wa { background: #25D366; font-size: 15px; padding: 14px; }
+.btn-outline {
+  width: 100%; padding: 14px; border: 2px solid #ddd; border-radius: 12px;
+  background: white; color: #888; font-size: 14px; font-weight: 600;
+  cursor: pointer; margin-top: 8px;
+}
+.btn-outline:active { border-color: #e74c3c; color: #e74c3c; }
+
+/* Stats */
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.stat {
+  text-align: center; padding: 14px 8px; background: #f8f8f8; border-radius: 10px;
+}
+.stat .sv { font-size: 22px; font-weight: 700; }
+.stat .sl { font-size: 11px; color: #888; margin-top: 2px; text-transform: uppercase; }
+.stat.green { background: #27ae60; }
+.stat.green .sv, .stat.green .sl { color: white; }
+.stat.blue { background: #2980b9; }
+.stat.blue .sv, .stat.blue .sl { color: white; }
+.stat.red { background: #e74c3c; }
+.stat.red .sv, .stat.red .sl { color: white; }
+
+/* Breakdown */
+.brow {
+  display: flex; justify-content: space-between; padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0; font-size: 14px;
+}
+.brow:last-child { border-bottom: none; }
+
+/* Expense */
+.exp-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid #f0f0f0;
+}
+.exp-name {
+  flex: 1; padding: 8px 10px; border: 2px solid #ddd; border-radius: 8px;
+  font-size: 14px;
+}
+.exp-name:focus { border-color: #e74c3c; outline: none; }
+.exp-amt {
+  width: 80px; padding: 8px 10px; border: 2px solid #ddd; border-radius: 8px;
+  font-size: 16px; text-align: center; font-weight: 600;
+}
+.exp-amt:focus { border-color: #e74c3c; outline: none; }
+.exp-del {
+  width: 30px; height: 30px; border: none; background: #ffebee; color: #e74c3c;
+  border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer;
+}
+.exp-total {
+  display: flex; justify-content: space-between; padding: 10px 0; margin-top: 4px;
+  border-top: 2px solid #eee; font-size: 16px; font-weight: 700;
+}
+
+/* Profit box */
+.profit-box {
+  text-align: center; padding: 14px; border-radius: 12px; margin-top: 10px;
+}
+.profit-box.pos { background: #e8f5e9; }
+.profit-box.neg { background: #ffebee; }
+.profit-box .pn { font-size: 28px; font-weight: 800; }
+.profit-box.pos .pn { color: #2e7d32; }
+.profit-box.neg .pn { color: #c62828; }
+.profit-box .pl { font-size: 12px; color: #666; margin-top: 2px; }
+
+/* Alert boxes */
+.alert-ok {
+  padding: 10px; background: #e8f5e9; border: 2px solid #4caf50; border-radius: 8px;
+  color: #2e7d32; font-size: 13px; font-weight: 500; margin-top: 8px; text-align: center;
+}
+.alert-warn {
+  padding: 10px; background: #fff3e0; border: 2px solid #ff9800; border-radius: 8px;
+  color: #e65100; font-size: 13px; font-weight: 500; margin-top: 8px; text-align: center;
+}
+
+/* History */
+.h-item {
+  padding: 12px; background: white; border-radius: 10px; margin-bottom: 8px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.h-item .h-rev { font-weight: 700; color: #27ae60; float: right; font-size: 16px; }
+.h-item .h-date { font-weight: 600; font-size: 15px; }
+.h-item .h-info { font-size: 13px; color: #666; margin-top: 3px; }
+
+.toggle-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.toggle-btn {
+  flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 10px;
+  font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
+  background: white; color: #666;
+}
+.toggle-btn.active { border-color: #e74c3c; background: #e74c3c; color: white; }
+
+.weekly-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
+.weekly-table th { background: #f5f5f5; padding: 8px 6px; text-align: left; font-weight: 600; border-bottom: 2px solid #ddd; font-size: 12px; }
+.weekly-table td { padding: 6px; border-bottom: 1px solid #f0f0f0; text-align: center; }
+.weekly-table td:first-child { text-align: left; font-weight: 500; }
+
+.info { font-size: 13px; color: #888; margin-bottom: 10px; }
+
+/* Order box */
+.order-box {
+  text-align: center; padding: 14px; background: #fff3e0; border-radius: 12px; margin-top: 8px;
+}
+.order-box .on { font-size: 20px; font-weight: 800; color: #e65100; }
+.order-box .ol { font-size: 13px; color: #bf360c; margin-top: 2px; }
+
+.section-title {
+  font-size: 11px; color: #e74c3c; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1px; margin: 14px 0 6px 0; padding-bottom: 4px;
+  border-bottom: 2px solid #fce4ec;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="logo.png" alt="We Are Tops" class="header-logo">
+  <h1>WE ARE TOPS</h1>
+  <div class="date" id="todayDate"></div>
+</div>
+
+<datalist id="exp-suggest">
+  <option value="Potatoes"><option value="Onions"><option value="Oil"><option value="Gas">
+  <option value="Pav (Buns)"><option value="Cheese"><option value="Paddu Batter">
+  <option value="Green Chutney"><option value="Dry Garlic Chutney"><option value="Masala">
+  <option value="Ghee"><option value="Salt"><option value="Transport"><option value="Cleaning">
+  <option value="Staff Food"><option value="Misc">
+</datalist>
+
+<!-- ==================== HOME ==================== -->
+<div class="page active" id="pg-home">
+  <div class="main-menu">
+    <div class="menu-btn" onclick="goTo('food')">
+      <div class="icon">🍔</div>
+      <div>
+        <div class="label">Food Stock</div>
+        <div class="sublabel">Buns, Cheese, Batter — Opening & Closing</div>
+      </div>
+      <span class="badge" id="badge-food">Open</span>
+    </div>
+
+    <div class="menu-btn" onclick="goTo('supplies')">
+      <div class="icon">📦</div>
+      <div>
+        <div class="label">Supplies Stock</div>
+        <div class="sublabel">Pouches, Trays, Containers, Gloves...</div>
+      </div>
+      <span class="badge" id="badge-supplies">Open</span>
+    </div>
+
+    <div class="menu-btn" onclick="goTo('expenses')">
+      <div class="icon">💸</div>
+      <div>
+        <div class="label">Daily Expenses</div>
+        <div class="sublabel">Potatoes, Oil, Gas, Onions...</div>
+      </div>
+      <span class="badge" id="badge-expenses">Open</span>
+    </div>
+
+    <button class="btn btn-red" id="closeDayBtn" onclick="closeDay()" style="margin-top:8px;">CLOSE DAY & GENERATE REPORT</button>
+  </div>
+</div>
+
+<!-- ==================== FOOD STOCK ==================== -->
+<div class="page" id="pg-food">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <span class="back-title">Food Stock</span>
+  </div>
+
+  <div class="card">
+    <h3>Opening (3 AM)</h3>
+    <div class="row">
+      <div><span class="row-label">Pav (Buns)</span></div>
+      <div><input type="number" class="row-input" id="o-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Cheese Slices</span></div>
+      <div><input type="number" class="row-input" id="o-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Paddu Batter</span></div>
+      <div><input type="number" class="row-input" id="o-batter" placeholder="0" inputmode="decimal" step="0.5" onchange="saveAll()"><span class="row-unit">litres</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Closing (12 PM)</h3>
+    <div class="row">
+      <div><span class="row-label">Buns left</span></div>
+      <div><input type="number" class="row-input" id="c-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Cheese left</span></div>
+      <div><input type="number" class="row-input" id="c-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Wasted buns</span></div>
+      <div><input type="number" class="row-input" id="w-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Wasted cheese</span></div>
+      <div><input type="number" class="row-input" id="w-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Paddu Sold (estimate)</h3>
+    <div class="row">
+      <div><span class="row-label">Classic Paddu</span><br><span class="row-sub">₹50 each</span></div>
+      <div><input type="number" class="row-input" id="c-cpaddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Ghee Paddu</span><br><span class="row-sub">₹70 each</span></div>
+      <div><input type="number" class="row-input" id="c-gpaddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Paddu Wasted</span><br><span class="row-sub">Plates thrown / spoiled</span></div>
+      <div><input type="number" class="row-input" id="w-paddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Money Collected</h3>
+    <div class="row">
+      <div><span class="row-label">Cash in hand</span></div>
+      <div><input type="number" class="row-input wide" id="c-cash" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">₹</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">UPI total</span></div>
+      <div><input type="number" class="row-input wide" id="c-upi" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">₹</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Tomorrow's Order</h3>
+    <p class="info">Manager decides — how much for tomorrow?</p>
+    <div class="row">
+      <div><span class="row-label">Buns</span><br><span class="row-sub" id="ref-buns">Used today: -</span></div>
+      <div><input type="number" class="row-input" id="t-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Cheese</span><br><span class="row-sub" id="ref-cheese">Used today: -</span></div>
+      <div><input type="number" class="row-input" id="t-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+    </div>
+    <div class="row">
+      <div><span class="row-label">Batter</span></div>
+      <div><input type="number" class="row-input" id="t-batter" placeholder="0" inputmode="decimal" step="0.5" onchange="saveAll()"><span class="row-unit">litres</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Notes</h3>
+    <textarea id="c-notes" placeholder="Any notes... (rain, low crowd, etc.)"
+      style="width:100%; padding:10px; border:2px solid #ddd; border-radius:8px; font-size:14px; resize:vertical; min-height:50px;"
+      onchange="saveAll()"></textarea>
+  </div>
+
+  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+</div>
+
+<!-- ==================== SUPPLIES STOCK ==================== -->
+<div class="page" id="pg-supplies">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <span class="back-title">Supplies Stock</span>
+  </div>
+  <p class="info">Enter opening count in the morning, closing count at end of day. System calculates usage.</p>
+  <div id="suppliesCards"></div>
+  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+</div>
+
+<!-- ==================== DAILY EXPENSES ==================== -->
+<div class="page" id="pg-expenses">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <span class="back-title">Daily Expenses</span>
+  </div>
+  <p class="info">Add everything you purchased/spent today</p>
+
+  <div class="card">
+    <div id="expList"></div>
+    <button class="btn-outline" onclick="addExp()">+ Add Expense</button>
+    <div class="exp-total" id="expTotalRow" style="display:none;">
+      <span>Total Expenses</span>
+      <span style="color:#e74c3c;" id="expTotalAmt">₹0</span>
+    </div>
+  </div>
+
+  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+</div>
+
+<!-- ==================== REPORT ==================== -->
+<div class="page" id="pg-report">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <span class="back-title">Today's Report</span>
+  </div>
+  <div id="reportContent"></div>
+</div>
+
+<!-- ==================== HISTORY ==================== -->
+<div class="page" id="pg-history">
+  <div class="toggle-row">
+    <button class="toggle-btn active" id="tog-daily" onclick="histView('daily')">Daily</button>
+    <button class="toggle-btn" id="tog-weekly" onclick="histView('weekly')">Weekly</button>
+  </div>
+  <div id="dailyHist"></div>
+  <div id="weeklyHist" style="display:none;"></div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bottom-nav">
+  <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
+    <span class="nav-icon">🏠</span>Home
+  </button>
+  <button class="nav-btn" id="nav-report" onclick="goTo('report')">
+    <span class="nav-icon">📊</span>Report
+  </button>
+  <button class="nav-btn" id="nav-history" onclick="goTo('history')">
+    <span class="nav-icon">📅</span>History
+  </button>
+</div>
+
+<script>
+// ============ CONFIG ============
+const PRICES = { classic_vp: 30, cheese_vp: 45, classic_paddu: 50, ghee_paddu: 70 };
+
+const SUPPLIES = [
+  { id: 'vp-pouch', name: 'VP Pouches', cat: 'Serving' },
+  { id: 'paddu-tray', name: 'Paddu Trays', cat: 'Serving' },
+  { id: 'butter-paper', name: 'Butter Paper', cat: 'Serving' },
+  { id: '50ml-serve', name: '50ml Containers', cat: 'Serving' },
+  { id: '100ml-serve', name: '100ml Containers', cat: 'Serving' },
+  { id: 'vp-parcel', name: 'VP Parcel Pouches', cat: 'Parcel' },
+  { id: 'paddu-parcel', name: 'Paddu Parcel Pouches', cat: 'Parcel' },
+  { id: '50ml-parcel', name: '50ml + Cap', cat: 'Parcel' },
+  { id: '100ml-parcel', name: '100ml + Cap', cat: 'Parcel' },
+  { id: 'tissue', name: 'Tissue Paper', cat: 'General' },
+  { id: 'garbage', name: 'Garbage Covers', cat: 'General' },
+  { id: 'gloves', name: 'Gloves', cat: 'General' },
+  { id: 'headcover', name: 'Head Covers', cat: 'General' }
+];
+
+// ============ STATE ============
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function freshState() {
+  const so = {}, sc = {};
+  SUPPLIES.forEach(s => { so[s.id] = 0; sc[s.id] = 0; });
+  return {
+    date: todayStr(), closed: false,
+    o: { buns:0, cheese:0, batter:0 },
+    c: { buns:0, cheese:0, wBuns:0, wCheese:0, cPaddu:0, gPaddu:0, wPaddu:0, cash:0, upi:0, notes:'' },
+    so, sc,
+    tom: { buns:0, cheese:0, batter:0 },
+    exp: []
+  };
+}
+
+let S = loadS();
+function loadS() {
+  const s = localStorage.getItem('wat_v4');
+  if (s) { const p = JSON.parse(s); if (p.date === todayStr()) return p; }
+  return freshState();
+}
+function saveS() { S.date = todayStr(); localStorage.setItem('wat_v4', JSON.stringify(S)); }
+
+// ============ HELPERS ============
+function gv(id) { return parseInt(document.getElementById(id)?.value) || 0; }
+function gvf(id) { return parseFloat(document.getElementById(id)?.value) || 0; }
+function sv(id, v) { const e = document.getElementById(id); if(e) e.value = v || ''; }
+
+function calc() {
+  const bunsUsed = Math.max(0, S.o.buns - S.c.buns - S.c.wBuns);
+  const cheeseUsed = Math.max(0, S.o.cheese - S.c.cheese - S.c.wCheese);
+  const cheeseVP = Math.min(cheeseUsed, bunsUsed);
+  const classicVP = Math.max(0, bunsUsed - cheeseVP);
+  const expRev = classicVP*PRICES.classic_vp + cheeseVP*PRICES.cheese_vp +
+                 S.c.cPaddu*PRICES.classic_paddu + S.c.gPaddu*PRICES.ghee_paddu;
+  const actRev = S.c.cash + S.c.upi;
+  const totalExp = S.exp.reduce((s,e) => s+e.amount, 0);
+  const supUsed = {};
+  SUPPLIES.forEach(s => { supUsed[s.id] = Math.max(0, (S.so[s.id]||0) - (S.sc[s.id]||0)); });
+  return {
+    bunsUsed, cheeseUsed, classicVP, cheeseVP,
+    cPaddu: S.c.cPaddu, gPaddu: S.c.gPaddu,
+    expRev, actRev, diff: actRev - expRev,
+    items: classicVP + cheeseVP + S.c.cPaddu + S.c.gPaddu,
+    totalExp, profit: actRev - totalExp, supUsed
+  };
+}
+
+// ============ SAVE ALL FIELDS ============
+function saveAll() {
+  S.o = { buns: gv('o-buns'), cheese: gv('o-cheese'), batter: gvf('o-batter') };
+  S.c = {
+    buns: gv('c-buns'), cheese: gv('c-cheese'), wBuns: gv('w-buns'), wCheese: gv('w-cheese'),
+    cPaddu: gv('c-cpaddu'), gPaddu: gv('c-gpaddu'), wPaddu: gv('w-paddu'), cash: gv('c-cash'), upi: gv('c-upi'),
+    notes: document.getElementById('c-notes')?.value || ''
+  };
+  S.tom = { buns: gv('t-buns'), cheese: gv('t-cheese'), batter: gvf('t-batter') };
+  // Save supplies
+  SUPPLIES.forEach(s => {
+    S.so[s.id] = gv('so-'+s.id);
+    S.sc[s.id] = gv('sc-'+s.id);
+  });
+  saveS();
+  updateBadges();
+  updateRefs();
+}
+
+function updateRefs() {
+  const c = calc();
+  sv('ref-buns', null); sv('ref-cheese', null);
+  const rb = document.getElementById('ref-buns');
+  const rc = document.getElementById('ref-cheese');
+  if (rb) rb.textContent = 'Used today: ' + c.bunsUsed;
+  if (rc) rc.textContent = 'Used today: ' + c.cheeseUsed;
+}
+
+// ============ EXPENSES ============
+function addExp(name, amount) {
+  const list = document.getElementById('expList');
+  const row = document.createElement('div');
+  row.className = 'exp-row';
+  row.innerHTML = `
+    <input type="text" class="exp-name" placeholder="Item name" value="${name||''}" list="exp-suggest" onchange="saveExp()">
+    <input type="number" class="exp-amt" placeholder="₹" value="${amount||''}" inputmode="numeric" onchange="saveExp()">
+    <button class="exp-del" onclick="this.closest('.exp-row').remove();saveExp()">x</button>
+  `;
+  list.appendChild(row);
+  if (!name) row.querySelector('.exp-name').focus();
+  updateExpTotal();
+}
+
+function saveExp() {
+  S.exp = [];
+  document.querySelectorAll('.exp-row').forEach(r => {
+    const n = r.querySelector('.exp-name').value.trim();
+    const a = parseInt(r.querySelector('.exp-amt').value) || 0;
+    if (n || a > 0) S.exp.push({ name: n, amount: a });
+  });
+  saveS();
+  updateExpTotal();
+  updateBadges();
+}
+
+function updateExpTotal() {
+  const t = S.exp.reduce((s,e) => s+e.amount, 0);
+  const row = document.getElementById('expTotalRow');
+  const amt = document.getElementById('expTotalAmt');
+  row.style.display = t > 0 ? 'flex' : 'none';
+  amt.textContent = '₹' + t;
+}
+
+function renderExpRows() {
+  document.getElementById('expList').innerHTML = '';
+  if (S.exp.length > 0) S.exp.forEach(e => addExp(e.name, e.amount));
+}
+
+// ============ SUPPLIES UI ============
+function buildSuppliesUI() {
+  const container = document.getElementById('suppliesCards');
+  const cats = [...new Set(SUPPLIES.map(s => s.cat))];
+  let html = '';
+  cats.forEach(cat => {
+    html += `<div class="card"><h3>${cat}</h3>`;
+    SUPPLIES.filter(s => s.cat === cat).forEach(s => {
+      html += `<div class="row">
+        <div><span class="row-label">${s.name}</span></div>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <input type="number" class="row-input" id="so-${s.id}" placeholder="Open" inputmode="numeric" onchange="saveAll()" style="width:55px;font-size:14px;">
+          <span class="row-unit">→</span>
+          <input type="number" class="row-input" id="sc-${s.id}" placeholder="Close" inputmode="numeric" onchange="saveAll()" style="width:55px;font-size:14px;">
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
+// ============ NAVIGATION ============
+function goTo(pg) {
+  saveAll();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pg-' + pg).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const navMap = { home: 'nav-home', report: 'nav-report', history: 'nav-history' };
+  if (navMap[pg]) document.getElementById(navMap[pg]).classList.add('active');
+  if (pg === 'report') renderReport();
+  if (pg === 'history') renderHistory();
+}
+
+// ============ BADGES ============
+function updateBadges() {
+  const bf = document.getElementById('badge-food');
+  const bs = document.getElementById('badge-supplies');
+  const be = document.getElementById('badge-expenses');
+  // Food: check if opening is filled
+  if (S.o.buns > 0 || S.o.cheese > 0 || S.o.batter > 0) {
+    if (S.c.cash > 0 || S.c.upi > 0) { bf.textContent = 'Done'; bf.className = 'badge done'; }
+    else { bf.textContent = 'Started'; bf.className = 'badge'; }
+  } else { bf.textContent = 'Open'; bf.className = 'badge'; }
+  // Supplies
+  const hasOpen = SUPPLIES.some(s => S.so[s.id] > 0);
+  if (hasOpen) { bs.textContent = 'Filled'; bs.className = 'badge done'; }
+  else { bs.textContent = 'Open'; bs.className = 'badge'; }
+  // Expenses
+  if (S.exp.length > 0) {
+    const t = S.exp.reduce((s,e) => s+e.amount, 0);
+    be.textContent = '₹' + t; be.className = 'badge';
+  } else { be.textContent = 'Open'; be.className = 'badge'; }
+
+  if (S.closed) {
+    document.getElementById('closeDayBtn').style.display = 'none';
+  }
+}
+
+// ============ CLOSE DAY ============
+function closeDay() {
+  saveAll();
+  const c = calc();
+  if (c.actRev === 0 && !confirm('Cash and UPI are both ₹0. Continue?')) return;
+  if (!confirm('Close the day and generate report?')) return;
+  S.closed = true;
+  saveS();
+  saveToHistory();
+  updateBadges();
+  goTo('report');
+}
+
+// ============ REPORT ============
+function renderReport() {
+  const c = calc();
+  const o = S.o; const cl = S.c;
+  let h = '';
+
+  if (!S.closed) {
+    h = '<div class="card"><p class="info" style="text-align:center;padding:30px 0;">Fill all 3 sections and close the day to see the report.</p></div>';
+    document.getElementById('reportContent').innerHTML = h;
+    return;
+  }
+
+  // Revenue
+  h += '<div class="card"><h3>Revenue</h3><div class="stat-grid">';
+  h += `<div class="stat green"><div class="sv">₹${c.actRev}</div><div class="sl">Collected</div></div>`;
+  h += `<div class="stat"><div class="sv">${c.items}</div><div class="sl">Items Sold</div></div>`;
+  h += `<div class="stat blue"><div class="sv">₹${cl.cash}</div><div class="sl">Cash</div></div>`;
+  h += `<div class="stat blue"><div class="sv">₹${cl.upi}</div><div class="sl">UPI</div></div>`;
+  h += '</div></div>';
+
+  // Items sold
+  h += '<div class="card"><h3>Items Sold</h3>';
+  if(c.classicVP>0) h+=`<div class="brow"><span>Classic VP x${c.classicVP}</span><strong>₹${c.classicVP*30}</strong></div>`;
+  if(c.cheeseVP>0) h+=`<div class="brow"><span>Cheese VP x${c.cheeseVP}</span><strong>₹${c.cheeseVP*45}</strong></div>`;
+  if(c.cPaddu>0) h+=`<div class="brow"><span>Classic Paddu x${c.cPaddu}</span><strong>₹${c.cPaddu*50}</strong></div>`;
+  if(c.gPaddu>0) h+=`<div class="brow"><span>Ghee Paddu x${c.gPaddu}</span><strong>₹${c.gPaddu*70}</strong></div>`;
+  h+=`<div class="brow" style="border-top:2px solid #eee;padding-top:8px;"><span>Expected</span><strong>₹${c.expRev}</strong></div>`;
+  if(Math.abs(c.diff)<=10) h+='<div class="alert-ok">Accounts match!</div>';
+  else if(c.diff>0) h+=`<div class="alert-warn">₹${c.diff} extra</div>`;
+  else h+=`<div class="alert-warn">₹${Math.abs(c.diff)} short!</div>`;
+  h+='</div>';
+
+  // Expenses & Profit
+  if(S.exp.length>0){
+    h+='<div class="card"><h3>Expenses</h3>';
+    S.exp.forEach(e=>{if(e.name||e.amount>0)h+=`<div class="brow"><span>${e.name||'—'}</span><strong style="color:#e74c3c">₹${e.amount}</strong></div>`;});
+    h+=`<div class="brow" style="border-top:2px solid #eee;padding-top:8px;"><strong>Total Expenses</strong><strong style="color:#e74c3c">₹${c.totalExp}</strong></div>`;
+    h+=`<div class="profit-box ${c.profit>=0?'pos':'neg'}"><div class="pn">${c.profit>=0?'₹'+c.profit:'-₹'+Math.abs(c.profit)}</div><div class="pl">Today's Profit</div></div>`;
+    h+='</div>';
+  }
+
+  // Food inventory
+  h+='<div class="card"><h3>Food Inventory</h3>';
+  h+=`<div class="brow"><span>Buns: ${o.buns} → ${cl.buns} left</span><strong>Used: ${c.bunsUsed}</strong></div>`;
+  h+=`<div class="brow"><span>Cheese: ${o.cheese} → ${cl.cheese} left</span><strong>Used: ${c.cheeseUsed}</strong></div>`;
+  if(cl.wBuns>0) h+=`<div class="brow"><span>Wasted buns</span><strong style="color:#e74c3c">${cl.wBuns}</strong></div>`;
+  if(cl.wCheese>0) h+=`<div class="brow"><span>Wasted cheese</span><strong style="color:#e74c3c">${cl.wCheese}</strong></div>`;
+  if(cl.wPaddu>0) h+=`<div class="brow"><span>Wasted paddu plates</span><strong style="color:#e74c3c">${cl.wPaddu}</strong></div>`;
+  h+='</div>';
+
+  // Supplies used
+  const usedSup = SUPPLIES.filter(s => c.supUsed[s.id] > 0);
+  if(usedSup.length>0){
+    h+='<div class="card"><h3>Supplies Used</h3>';
+    usedSup.forEach(s=>{h+=`<div class="brow"><span>${s.name}</span><strong>${c.supUsed[s.id]}</strong></div>`;});
+    h+='</div>';
+  }
+
+  // Tomorrow's order
+  const t=S.tom;
+  if(t.buns>0||t.cheese>0||t.batter>0){
+    h+='<div class="card"><h3>Tomorrow\'s Order</h3><div class="order-box">';
+    const p=[]; if(t.buns>0)p.push(t.buns+' Buns'); if(t.cheese>0)p.push(t.cheese+' Cheese'); if(t.batter>0)p.push(t.batter+'L Batter');
+    h+=`<div class="on">${p.join(' | ')}</div><div class="ol">Manager's order</div></div></div>`;
+  }
+
+  if(cl.notes)h+=`<div class="card"><h3>Notes</h3><p style="font-size:14px;">${cl.notes}</p></div>`;
+
+  h+='<button class="btn btn-wa" onclick="shareWA()">SHARE ON WHATSAPP</button>';
+  document.getElementById('reportContent').innerHTML = h;
+}
+
+// ============ HISTORY ============
+function saveToHistory() {
+  const hist = JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+  const c = calc();
+  const rec = {
+    date:S.date, o:{...S.o}, c:{...S.c}, so:{...S.so}, sc:{...S.sc},
+    supUsed:{...c.supUsed}, classicVP:c.classicVP, cheeseVP:c.cheeseVP,
+    cPaddu:c.cPaddu, gPaddu:c.gPaddu,
+    rev:c.actRev, expRev:c.expRev, cash:S.c.cash, upi:S.c.upi,
+    items:c.items, bunsUsed:c.bunsUsed, tom:{...S.tom},
+    exp:[...S.exp], totalExp:c.totalExp, profit:c.profit
+  };
+  const i = hist.findIndex(h=>h.date===S.date);
+  if(i>=0)hist[i]=rec; else hist.unshift(rec);
+  localStorage.setItem('wat_hist_v4', JSON.stringify(hist));
+}
+
+function renderHistory() {
+  const hist = JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+  const el = document.getElementById('dailyHist');
+  if(!hist.length){el.innerHTML='<div class="card"><p class="info" style="text-align:center;">No history yet</p></div>';renderWeekly();return;}
+  el.innerHTML = hist.slice(0,30).map(h=>{
+    const d=new Date(h.date+'T00:00:00');
+    const ds=d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+    const pf=h.totalExp>0?` | Profit ₹${h.profit}`:'';
+    return `<div class="h-item"><span class="h-rev">₹${h.rev}</span><div class="h-date">${ds}</div>
+    <div class="h-info">${h.items} items | Cash ₹${h.cash} | UPI ₹${h.upi}${pf}</div>
+    ${h.totalExp>0?`<div class="h-info">Expenses: ₹${h.totalExp}</div>`:''}</div>`;
+  }).join('');
+  renderWeekly();
+}
+
+function histView(v) {
+  document.getElementById('tog-daily').className='toggle-btn'+(v==='daily'?' active':'');
+  document.getElementById('tog-weekly').className='toggle-btn'+(v==='weekly'?' active':'');
+  document.getElementById('dailyHist').style.display=v==='daily'?'block':'none';
+  document.getElementById('weeklyHist').style.display=v==='weekly'?'block':'none';
+}
+
+function renderWeekly() {
+  const hist=JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+  const el=document.getElementById('weeklyHist');
+  if(!hist.length){el.innerHTML='<div class="card"><p class="info" style="text-align:center;">No data</p></div>';return;}
+  const weeks={};
+  hist.forEach(h=>{const d=new Date(h.date+'T00:00:00');const dy=d.getDay();const mo=dy===0?-6:1-dy;const m=new Date(d);m.setDate(d.getDate()+mo);const k=m.toISOString().slice(0,10);if(!weeks[k])weeks[k]=[];weeks[k].push(h);});
+  let html='';
+  for(const[ws,days]of Object.entries(weeks)){
+    const s=new Date(ws+'T00:00:00');const e=new Date(s);e.setDate(s.getDate()+6);
+    const wl=s.toLocaleDateString('en-IN',{month:'short',day:'numeric'})+' - '+e.toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+    const tr=days.reduce((a,d)=>a+d.rev,0);const tc=days.reduce((a,d)=>a+d.cash,0);
+    const tu=days.reduce((a,d)=>a+d.upi,0);const ti=days.reduce((a,d)=>a+d.items,0);
+    const te=days.reduce((a,d)=>a+(d.totalExp||0),0);const wp=tr-te;
+
+    html+=`<div class="card"><h3>Week: ${wl}</h3><div class="stat-grid" style="margin-bottom:10px;">`;
+    html+=`<div class="stat green"><div class="sv">₹${tr}</div><div class="sl">Revenue (${days.length}d)</div></div>`;
+    html+=`<div class="stat"><div class="sv">${ti}</div><div class="sl">Items</div></div>`;
+    html+=`<div class="stat blue"><div class="sv">₹${tc}</div><div class="sl">Cash</div></div>`;
+    html+=`<div class="stat blue"><div class="sv">₹${tu}</div><div class="sl">UPI</div></div></div>`;
+    if(te>0){
+      html+=`<div class="stat-grid"><div class="stat red"><div class="sv">₹${te}</div><div class="sl">Expenses</div></div>`;
+      html+=`<div class="stat ${wp>=0?'green':''}" ${wp<0?'style="background:#ffebee"':''}><div class="sv" ${wp<0?'style="color:#c62828"':''}>₹${wp}</div><div class="sl" ${wp<0?'style="color:#c62828"':''}>Profit</div></div></div>`;
+    }
+    // Supplies
+    const ws2={};SUPPLIES.forEach(s=>{ws2[s.id]=0;});
+    days.forEach(d=>{if(d.supUsed)SUPPLIES.forEach(s=>{ws2[s.id]+=(d.supUsed[s.id]||0);});});
+    const used=SUPPLIES.filter(s=>ws2[s.id]>0);
+    if(used.length>0){
+      html+='<h3 style="font-size:12px;color:#666;margin:10px 0 6px;text-transform:uppercase;">Supplies Used</h3>';
+      html+='<table class="weekly-table"><tr><th>Item</th><th>Used</th></tr>';
+      used.forEach(s=>{html+=`<tr><td>${s.name}</td><td>${ws2[s.id]}</td></tr>`;});
+      html+='</table>';
+    }
+    html+=`<button class="btn btn-wa" style="margin-top:10px;" onclick="shareWeekly('${ws}')">SHARE WEEKLY</button></div>`;
+  }
+  el.innerHTML=html;
+}
+
+// ============ WHATSAPP ============
+function shareWA() {
+  const c=calc();const cl=S.c;const t=S.tom;
+  const ds=new Date().toLocaleDateString('en-IN',{weekday:'long',month:'short',day:'numeric'});
+  let m=`*WE ARE TOPS - Daily Report*\n${ds}\n\n*Revenue: ₹${c.actRev}*\nCash: ₹${cl.cash} | UPI: ₹${cl.upi}\n\n`;
+  m+=`*Items (${c.items}):*\n`;
+  if(c.classicVP>0)m+=`Classic VP: ${c.classicVP} (₹${c.classicVP*30})\n`;
+  if(c.cheeseVP>0)m+=`Cheese VP: ${c.cheeseVP} (₹${c.cheeseVP*45})\n`;
+  if(c.cPaddu>0)m+=`Classic Paddu: ${c.cPaddu} (₹${c.cPaddu*50})\n`;
+  if(c.gPaddu>0)m+=`Ghee Paddu: ${c.gPaddu} (₹${c.gPaddu*70})\n`;
+  m+=`\nExpected: ₹${c.expRev}\n`;
+  if(Math.abs(c.diff)<=10)m+=`Accounts: Match\n`;else if(c.diff>0)m+=`Extra: +₹${c.diff}\n`;else m+=`Short: -₹${Math.abs(c.diff)}\n`;
+  if(S.exp.length>0){
+    m+=`\n*Expenses (₹${c.totalExp}):*\n`;
+    S.exp.forEach(e=>{if(e.name||e.amount>0)m+=`${e.name}: ₹${e.amount}\n`;});
+    m+=`\n*Profit: ₹${c.profit}*\n`;
+  }
+  m+=`\n*Inventory:*\nBuns: ${S.o.buns}→${cl.buns} left (${c.bunsUsed} used)\nCheese: ${S.o.cheese}→${cl.cheese} left\n`;
+  if(cl.wBuns>0)m+=`Wasted buns: ${cl.wBuns}\n`;
+  if(cl.wPaddu>0)m+=`Wasted paddu: ${cl.wPaddu} plates\n`;
+  const us=SUPPLIES.filter(s=>c.supUsed[s.id]>0);
+  if(us.length>0){m+=`\n*Supplies Used:*\n`;us.forEach(s=>{m+=`${s.name}: ${c.supUsed[s.id]}\n`;});}
+  if(t.buns>0||t.cheese>0||t.batter>0){
+    m+=`\n*Tomorrow's Order:*\n`;
+    if(t.buns>0)m+=`Buns: ${t.buns}\n`;if(t.cheese>0)m+=`Cheese: ${t.cheese}\n`;if(t.batter>0)m+=`Batter: ${t.batter}L\n`;
+  }
+  if(cl.notes)m+=`\nNotes: ${cl.notes}`;
+  window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
+}
+
+function shareWeekly(ws) {
+  const hist=JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+  const s=new Date(ws+'T00:00:00');const e=new Date(s);e.setDate(s.getDate()+6);
+  const days=hist.filter(h=>{const d=new Date(h.date+'T00:00:00');return d>=s&&d<=e;});
+  const wl=s.toLocaleDateString('en-IN',{month:'short',day:'numeric'})+' - '+e.toLocaleDateString('en-IN',{month:'short',day:'numeric'});
+  const tr=days.reduce((a,d)=>a+d.rev,0);const tc=days.reduce((a,d)=>a+d.cash,0);
+  const tu=days.reduce((a,d)=>a+d.upi,0);const ti=days.reduce((a,d)=>a+d.items,0);
+  const te=days.reduce((a,d)=>a+(d.totalExp||0),0);
+  let m=`*WE ARE TOPS - Weekly*\n${wl} (${days.length} days)\n\n*Revenue: ₹${tr}*\nCash: ₹${tc} | UPI: ₹${tu}\nItems: ${ti}\n`;
+  if(te>0)m+=`\n*Expenses: ₹${te}*\n*Profit: ₹${tr-te}*\n`;
+  m+=`\nClassic VP: ${days.reduce((a,d)=>a+(d.classicVP||0),0)}\nCheese VP: ${days.reduce((a,d)=>a+(d.cheeseVP||0),0)}\n`;
+  m+=`Classic Paddu: ${days.reduce((a,d)=>a+(d.cPaddu||0),0)}\nGhee Paddu: ${days.reduce((a,d)=>a+(d.gPaddu||0),0)}\n`;
+  const ws2={};SUPPLIES.forEach(s=>{ws2[s.id]=0;});days.forEach(d=>{if(d.supUsed)SUPPLIES.forEach(s=>{ws2[s.id]+=(d.supUsed[s.id]||0);});});
+  const used=SUPPLIES.filter(s=>ws2[s.id]>0);
+  if(used.length>0){m+=`\n*Supplies:*\n`;used.forEach(s=>{m+=`${s.name}: ${ws2[s.id]}\n`;});}
+  m+=`\n*Avg/Day: ₹${Math.round(tr/days.length)}*`;
+  window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
+}
+
+// ============ INIT ============
+function init() {
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  // Restore food fields
+  sv('o-buns',S.o.buns);sv('o-cheese',S.o.cheese);sv('o-batter',S.o.batter);
+  sv('c-buns',S.c.buns);sv('c-cheese',S.c.cheese);sv('w-buns',S.c.wBuns);sv('w-cheese',S.c.wCheese);
+  sv('c-cpaddu',S.c.cPaddu);sv('c-gpaddu',S.c.gPaddu);sv('w-paddu',S.c.wPaddu);
+  sv('c-cash',S.c.cash);sv('c-upi',S.c.upi);
+  document.getElementById('c-notes').value=S.c.notes||'';
+  sv('t-buns',S.tom.buns);sv('t-cheese',S.tom.cheese);sv('t-batter',S.tom.batter);
+  // Build & restore supplies
+  buildSuppliesUI();
+  SUPPLIES.forEach(s=>{sv('so-'+s.id,S.so[s.id]);sv('sc-'+s.id,S.sc[s.id]);});
+  // Restore expenses
+  renderExpRows();
+  updateBadges();
+  updateRefs();
+}
+init();
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+</script>
+</body>
+</html>
