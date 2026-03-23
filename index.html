@@ -17,6 +17,34 @@ body {
   padding-bottom: 100px;
 }
 
+/* Login */
+.login-screen {
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 24px;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+.login-box {
+  background: white; border-radius: 16px; padding: 32px 24px;
+  width: 100%; max-width: 360px; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.login-logo { display: block; height: 60px; margin: 0 auto 8px; }
+.login-title { text-align: center; font-size: 22px; font-weight: 800; margin-bottom: 4px; color: #333; }
+.login-sub { text-align: center; font-size: 13px; color: #888; margin-bottom: 24px; }
+.login-input {
+  width: 100%; padding: 14px 16px; border: 2px solid #ddd; border-radius: 10px;
+  font-size: 15px; margin-bottom: 12px; outline: none;
+}
+.login-input:focus { border-color: #e74c3c; }
+.login-btn {
+  width: 100%; padding: 16px; border: none; border-radius: 12px;
+  background: #e74c3c; color: white; font-size: 16px; font-weight: 700;
+  cursor: pointer; margin-top: 4px;
+}
+.login-btn:active { transform: scale(0.98); }
+.login-btn:disabled { opacity: 0.6; }
+.login-error { color: #e74c3c; font-size: 13px; text-align: center; margin-top: 10px; display: none; }
+.login-loading { text-align: center; color: #888; font-size: 14px; padding: 40px 0; }
+
 /* Header */
 .header {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
@@ -26,6 +54,11 @@ body {
 .header h1 { font-size: 20px; font-weight: 700; }
 .header-logo { height: 40px; margin-bottom: 4px; filter: brightness(0) invert(1); }
 .header .date { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+.header .logout-btn {
+  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.2); border: none; color: white;
+  padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;
+}
 
 /* 3 Main Menu Buttons */
 .main-menu { padding: 16px; }
@@ -220,14 +253,39 @@ body {
   letter-spacing: 1px; margin: 14px 0 6px 0; padding-bottom: 4px;
   border-bottom: 2px solid #fce4ec;
 }
+
+/* Sync indicator */
+.sync-dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+  margin-left: 6px; vertical-align: middle;
+}
+.sync-dot.online { background: #4caf50; }
+.sync-dot.offline { background: #ff9800; }
 </style>
 </head>
 <body>
 
-<div class="header">
+<!-- ==================== LOGIN SCREEN ==================== -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-box">
+    <img src="logo.png" alt="We Are Tops" class="login-logo">
+    <div class="login-title">We Are Tops</div>
+    <div class="login-sub">Daily Operations Tracker</div>
+    <input type="email" class="login-input" id="loginEmail" placeholder="Email" autocomplete="email">
+    <input type="password" class="login-input" id="loginPass" placeholder="Password" autocomplete="current-password">
+    <button class="login-btn" id="loginBtn" onclick="doLogin()">LOG IN</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ==================== APP (hidden until login) ==================== -->
+<div id="appMain" style="display:none;">
+
+<div class="header" style="position:relative;">
   <img src="logo.png" alt="We Are Tops" class="header-logo">
-  <h1>WE ARE TOPS</h1>
+  <h1>WE ARE TOPS <span class="sync-dot" id="syncDot" title="Cloud sync"></span></h1>
   <div class="date" id="todayDate"></div>
+  <button class="logout-btn" onclick="doLogout()">Logout</button>
 </div>
 
 <datalist id="exp-suggest">
@@ -433,7 +491,78 @@ body {
   </button>
 </div>
 
+</div><!-- end appMain -->
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <script>
+// ============ FIREBASE CONFIG ============
+// REPLACE with your Firebase config from console.firebase.google.com
+const firebaseConfig = {
+  apiKey: "AIzaSyD4yVkcYKZSbsGSxB3VIi9PshANoJ3ggjs",
+  authDomain: "we-are-tops.firebaseapp.com",
+  projectId: "we-are-tops",
+  storageBucket: "we-are-tops.firebasestorage.app",
+  messagingSenderId: "217236479244",
+  appId: "1:217236479244:web:ee6f230f6344c81595bd29"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+// Enable offline persistence
+db.enablePersistence({ synchronizeTabs: true }).catch(() => {});
+
+// ============ AUTH ============
+let currentUser = null;
+
+auth.onAuthStateChanged(user => {
+  if (user) {
+    currentUser = user;
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appMain').style.display = 'block';
+    startApp();
+  } else {
+    currentUser = null;
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('appMain').style.display = 'none';
+  }
+});
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+
+  if (!email || !pass) { errEl.textContent = 'Enter email and password'; errEl.style.display = 'block'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Logging in...';
+  errEl.style.display = 'none';
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .catch(err => {
+      let msg = 'Login failed';
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg = 'Wrong email or password';
+      else if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Try later.';
+      errEl.textContent = msg;
+      errEl.style.display = 'block';
+    })
+    .finally(() => { btn.disabled = false; btn.textContent = 'LOG IN'; });
+}
+
+function doLogout() {
+  if (confirm('Logout?')) auth.signOut();
+}
+
+// Enter key to login
+document.getElementById('loginPass').addEventListener('keyup', e => { if (e.key === 'Enter') doLogin(); });
+
 // ============ CONFIG ============
 const PRICES = { classic_vp: 30, cheese_vp: 45, classic_paddu: 50, ghee_paddu: 70 };
 
@@ -472,13 +601,87 @@ function freshState() {
   };
 }
 
-let S = loadS();
-function loadS() {
-  const s = localStorage.getItem('wat_v4');
-  if (s) { const p = JSON.parse(s); if (p.date === todayStr()) return p; }
-  return freshState();
+let S = freshState();
+let saveTimer = null;
+
+// ============ FIRESTORE SYNC ============
+function userDoc(docName) {
+  return db.collection('users').doc(currentUser.uid).collection('data').doc(docName);
 }
-function saveS() { S.date = todayStr(); localStorage.setItem('wat_v4', JSON.stringify(S)); }
+
+async function loadFromCloud() {
+  try {
+    // Load today's data
+    const todayDoc = await userDoc('day_' + todayStr()).get();
+    if (todayDoc.exists) {
+      S = todayDoc.data();
+    } else {
+      S = freshState();
+    }
+    updateSyncDot(true);
+  } catch (e) {
+    // Fallback to localStorage
+    const s = localStorage.getItem('wat_v4');
+    if (s) { const p = JSON.parse(s); if (p.date === todayStr()) S = p; }
+    updateSyncDot(false);
+  }
+}
+
+function saveToCloud() {
+  // Always save to localStorage as backup
+  localStorage.setItem('wat_v4', JSON.stringify(S));
+
+  if (!currentUser) return;
+
+  // Debounce cloud saves
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    userDoc('day_' + S.date).set(S)
+      .then(() => updateSyncDot(true))
+      .catch(() => updateSyncDot(false));
+  }, 1000);
+}
+
+function updateSyncDot(online) {
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot ' + (online ? 'online' : 'offline');
+  dot.title = online ? 'Synced to cloud' : 'Offline - will sync later';
+}
+
+async function saveHistoryToCloud(rec) {
+  // Save to localStorage backup
+  const hist = JSON.parse(localStorage.getItem('wat_hist_v4') || '[]');
+  const i = hist.findIndex(h => h.date === rec.date);
+  if (i >= 0) hist[i] = rec; else hist.unshift(rec);
+  localStorage.setItem('wat_hist_v4', JSON.stringify(hist));
+
+  // Save to Firestore
+  if (!currentUser) return;
+  try {
+    await userDoc('day_' + rec.date).set({ ...S, closed: true });
+    await db.collection('users').doc(currentUser.uid).collection('history').doc(rec.date).set(rec);
+    updateSyncDot(true);
+  } catch (e) {
+    updateSyncDot(false);
+  }
+}
+
+async function loadHistoryFromCloud() {
+  if (!currentUser) return JSON.parse(localStorage.getItem('wat_hist_v4') || '[]');
+  try {
+    const snap = await db.collection('users').doc(currentUser.uid)
+      .collection('history').orderBy('date', 'desc').limit(90).get();
+    const hist = [];
+    snap.forEach(doc => hist.push(doc.data()));
+    // Also update localStorage
+    localStorage.setItem('wat_hist_v4', JSON.stringify(hist));
+    updateSyncDot(true);
+    return hist;
+  } catch (e) {
+    updateSyncDot(false);
+    return JSON.parse(localStorage.getItem('wat_hist_v4') || '[]');
+  }
+}
 
 // ============ HELPERS ============
 function gv(id) { return parseInt(document.getElementById(id)?.value) || 0; }
@@ -514,19 +717,18 @@ function saveAll() {
     notes: document.getElementById('c-notes')?.value || ''
   };
   S.tom = { buns: gv('t-buns'), cheese: gv('t-cheese'), batter: gvf('t-batter') };
-  // Save supplies
   SUPPLIES.forEach(s => {
     S.so[s.id] = gv('so-'+s.id);
     S.sc[s.id] = gv('sc-'+s.id);
   });
-  saveS();
+  S.date = todayStr();
+  saveToCloud();
   updateBadges();
   updateRefs();
 }
 
 function updateRefs() {
   const c = calc();
-  sv('ref-buns', null); sv('ref-cheese', null);
   const rb = document.getElementById('ref-buns');
   const rc = document.getElementById('ref-cheese');
   if (rb) rb.textContent = 'Used today: ' + c.bunsUsed;
@@ -555,7 +757,7 @@ function saveExp() {
     const a = parseInt(r.querySelector('.exp-amt').value) || 0;
     if (n || a > 0) S.exp.push({ name: n, amount: a });
   });
-  saveS();
+  saveToCloud();
   updateExpTotal();
   updateBadges();
 }
@@ -612,24 +814,18 @@ function updateBadges() {
   const bf = document.getElementById('badge-food');
   const bs = document.getElementById('badge-supplies');
   const be = document.getElementById('badge-expenses');
-  // Food: check if opening is filled
   if (S.o.buns > 0 || S.o.cheese > 0 || S.o.batter > 0) {
     if (S.c.cash > 0 || S.c.upi > 0) { bf.textContent = 'Done'; bf.className = 'badge done'; }
     else { bf.textContent = 'Started'; bf.className = 'badge'; }
   } else { bf.textContent = 'Open'; bf.className = 'badge'; }
-  // Supplies
   const hasOpen = SUPPLIES.some(s => S.so[s.id] > 0);
   if (hasOpen) { bs.textContent = 'Filled'; bs.className = 'badge done'; }
   else { bs.textContent = 'Open'; bs.className = 'badge'; }
-  // Expenses
   if (S.exp.length > 0) {
     const t = S.exp.reduce((s,e) => s+e.amount, 0);
     be.textContent = '₹' + t; be.className = 'badge';
   } else { be.textContent = 'Open'; be.className = 'badge'; }
-
-  if (S.closed) {
-    document.getElementById('closeDayBtn').style.display = 'none';
-  }
+  if (S.closed) document.getElementById('closeDayBtn').style.display = 'none';
 }
 
 // ============ CLOSE DAY ============
@@ -639,7 +835,7 @@ function closeDay() {
   if (c.actRev === 0 && !confirm('Cash and UPI are both ₹0. Continue?')) return;
   if (!confirm('Close the day and generate report?')) return;
   S.closed = true;
-  saveS();
+  saveToCloud();
   saveToHistory();
   updateBadges();
   goTo('report');
@@ -657,7 +853,6 @@ function renderReport() {
     return;
   }
 
-  // Revenue
   h += '<div class="card"><h3>Revenue</h3><div class="stat-grid">';
   h += `<div class="stat green"><div class="sv">₹${c.actRev}</div><div class="sl">Collected</div></div>`;
   h += `<div class="stat"><div class="sv">${c.items}</div><div class="sl">Items Sold</div></div>`;
@@ -665,7 +860,6 @@ function renderReport() {
   h += `<div class="stat blue"><div class="sv">₹${cl.upi}</div><div class="sl">UPI</div></div>`;
   h += '</div></div>';
 
-  // Items sold
   h += '<div class="card"><h3>Items Sold</h3>';
   if(c.classicVP>0) h+=`<div class="brow"><span>Classic VP x${c.classicVP}</span><strong>₹${c.classicVP*30}</strong></div>`;
   if(c.cheeseVP>0) h+=`<div class="brow"><span>Cheese VP x${c.cheeseVP}</span><strong>₹${c.cheeseVP*45}</strong></div>`;
@@ -677,7 +871,6 @@ function renderReport() {
   else h+=`<div class="alert-warn">₹${Math.abs(c.diff)} short!</div>`;
   h+='</div>';
 
-  // Expenses & Profit
   if(S.exp.length>0){
     h+='<div class="card"><h3>Expenses</h3>';
     S.exp.forEach(e=>{if(e.name||e.amount>0)h+=`<div class="brow"><span>${e.name||'—'}</span><strong style="color:#e74c3c">₹${e.amount}</strong></div>`;});
@@ -686,7 +879,6 @@ function renderReport() {
     h+='</div>';
   }
 
-  // Food inventory
   h+='<div class="card"><h3>Food Inventory</h3>';
   h+=`<div class="brow"><span>Buns: ${o.buns} → ${cl.buns} left</span><strong>Used: ${c.bunsUsed}</strong></div>`;
   h+=`<div class="brow"><span>Cheese: ${o.cheese} → ${cl.cheese} left</span><strong>Used: ${c.cheeseUsed}</strong></div>`;
@@ -695,7 +887,6 @@ function renderReport() {
   if(cl.wPaddu>0) h+=`<div class="brow"><span>Wasted paddu plates</span><strong style="color:#e74c3c">${cl.wPaddu}</strong></div>`;
   h+='</div>';
 
-  // Supplies used
   const usedSup = SUPPLIES.filter(s => c.supUsed[s.id] > 0);
   if(usedSup.length>0){
     h+='<div class="card"><h3>Supplies Used</h3>';
@@ -703,7 +894,6 @@ function renderReport() {
     h+='</div>';
   }
 
-  // Tomorrow's order
   const t=S.tom;
   if(t.buns>0||t.cheese>0||t.batter>0){
     h+='<div class="card"><h3>Tomorrow\'s Order</h3><div class="order-box">';
@@ -719,7 +909,6 @@ function renderReport() {
 
 // ============ HISTORY ============
 function saveToHistory() {
-  const hist = JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
   const c = calc();
   const rec = {
     date:S.date, o:{...S.o}, c:{...S.c}, so:{...S.so}, sc:{...S.sc},
@@ -729,15 +918,14 @@ function saveToHistory() {
     items:c.items, bunsUsed:c.bunsUsed, tom:{...S.tom},
     exp:[...S.exp], totalExp:c.totalExp, profit:c.profit
   };
-  const i = hist.findIndex(h=>h.date===S.date);
-  if(i>=0)hist[i]=rec; else hist.unshift(rec);
-  localStorage.setItem('wat_hist_v4', JSON.stringify(hist));
+  saveHistoryToCloud(rec);
 }
 
-function renderHistory() {
-  const hist = JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+async function renderHistory() {
   const el = document.getElementById('dailyHist');
-  if(!hist.length){el.innerHTML='<div class="card"><p class="info" style="text-align:center;">No history yet</p></div>';renderWeekly();return;}
+  el.innerHTML = '<div class="login-loading">Loading history...</div>';
+  const hist = await loadHistoryFromCloud();
+  if(!hist.length){el.innerHTML='<div class="card"><p class="info" style="text-align:center;">No history yet</p></div>';renderWeekly(hist);return;}
   el.innerHTML = hist.slice(0,30).map(h=>{
     const d=new Date(h.date+'T00:00:00');
     const ds=d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
@@ -746,7 +934,7 @@ function renderHistory() {
     <div class="h-info">${h.items} items | Cash ₹${h.cash} | UPI ₹${h.upi}${pf}</div>
     ${h.totalExp>0?`<div class="h-info">Expenses: ₹${h.totalExp}</div>`:''}</div>`;
   }).join('');
-  renderWeekly();
+  renderWeekly(hist);
 }
 
 function histView(v) {
@@ -756,8 +944,8 @@ function histView(v) {
   document.getElementById('weeklyHist').style.display=v==='weekly'?'block':'none';
 }
 
-function renderWeekly() {
-  const hist=JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+function renderWeekly(hist) {
+  if (!hist) hist = [];
   const el=document.getElementById('weeklyHist');
   if(!hist.length){el.innerHTML='<div class="card"><p class="info" style="text-align:center;">No data</p></div>';return;}
   const weeks={};
@@ -779,7 +967,6 @@ function renderWeekly() {
       html+=`<div class="stat-grid"><div class="stat red"><div class="sv">₹${te}</div><div class="sl">Expenses</div></div>`;
       html+=`<div class="stat ${wp>=0?'green':''}" ${wp<0?'style="background:#ffebee"':''}><div class="sv" ${wp<0?'style="color:#c62828"':''}>₹${wp}</div><div class="sl" ${wp<0?'style="color:#c62828"':''}>Profit</div></div></div>`;
     }
-    // Supplies
     const ws2={};SUPPLIES.forEach(s=>{ws2[s.id]=0;});
     days.forEach(d=>{if(d.supUsed)SUPPLIES.forEach(s=>{ws2[s.id]+=(d.supUsed[s.id]||0);});});
     const used=SUPPLIES.filter(s=>ws2[s.id]>0);
@@ -824,8 +1011,8 @@ function shareWA() {
   window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
 }
 
-function shareWeekly(ws) {
-  const hist=JSON.parse(localStorage.getItem('wat_hist_v4')||'[]');
+async function shareWeekly(ws) {
+  const hist = await loadHistoryFromCloud();
   const s=new Date(ws+'T00:00:00');const e=new Date(s);e.setDate(s.getDate()+6);
   const days=hist.filter(h=>{const d=new Date(h.date+'T00:00:00');return d>=s&&d<=e;});
   const wl=s.toLocaleDateString('en-IN',{month:'short',day:'numeric'})+' - '+e.toLocaleDateString('en-IN',{month:'short',day:'numeric'});
@@ -843,9 +1030,12 @@ function shareWeekly(ws) {
   window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
 }
 
-// ============ INIT ============
-function init() {
+// ============ APP START ============
+async function startApp() {
   document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  await loadFromCloud();
+
   // Restore food fields
   sv('o-buns',S.o.buns);sv('o-cheese',S.o.cheese);sv('o-batter',S.o.batter);
   sv('c-buns',S.c.buns);sv('c-cheese',S.c.cheese);sv('w-buns',S.c.wBuns);sv('w-cheese',S.c.wCheese);
@@ -861,7 +1051,7 @@ function init() {
   updateBadges();
   updateRefs();
 }
-init();
+
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
 </script>
 </body>
