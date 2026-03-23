@@ -638,9 +638,9 @@ function freshState(dateStr) {
   };
 }
 
+let selectedDate = todayStr();
 let S = freshState();
 let saveTimer = null;
-let selectedDate = todayStr();
 
 // ============ FIRESTORE SYNC ============
 function userDoc(docName) {
