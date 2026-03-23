@@ -261,6 +261,34 @@ body {
 }
 .sync-dot.online { background: #4caf50; }
 .sync-dot.offline { background: #ff9800; }
+
+/* Date picker */
+.date-picker-bar {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 12px 16px; background: white; border-bottom: 2px solid #eee;
+}
+.date-arrow {
+  width: 36px; height: 36px; border: 2px solid #ddd; border-radius: 10px;
+  background: white; font-size: 18px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #333;
+}
+.date-arrow:active { border-color: #e74c3c; color: #e74c3c; }
+.date-display {
+  font-size: 15px; font-weight: 600; cursor: pointer; padding: 8px 14px;
+  background: #f5f5f5; border-radius: 10px; border: 2px solid #ddd; text-align: center;
+  min-width: 180px;
+}
+.date-display:active { border-color: #e74c3c; }
+.date-today-btn {
+  padding: 6px 12px; background: #e74c3c; color: white; border: none;
+  border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;
+}
+.date-today-btn:active { opacity: 0.8; }
+.past-date-banner {
+  background: #fff3e0; border: 2px solid #ff9800; border-radius: 10px;
+  padding: 10px; margin: 12px 16px 0; text-align: center;
+  font-size: 13px; color: #e65100; font-weight: 600;
+}
 </style>
 </head>
 <body>
@@ -287,6 +315,15 @@ body {
   <div class="date" id="todayDate"></div>
   <button class="logout-btn" onclick="doLogout()">Logout</button>
 </div>
+
+<div class="date-picker-bar">
+  <button class="date-arrow" onclick="changeDate(-1)">←</button>
+  <div class="date-display" id="dateDisplay" onclick="document.getElementById('datePicker').showPicker()"></div>
+  <input type="date" id="datePicker" style="position:absolute;opacity:0;width:0;height:0;" onchange="jumpToDate(this.value)">
+  <button class="date-arrow" onclick="changeDate(1)">→</button>
+  <button class="date-today-btn" id="todayBtn" onclick="jumpToDate(todayStr())" style="display:none;">Today</button>
+</div>
+<div class="past-date-banner" id="pastBanner" style="display:none;">Editing a previous day's data</div>
 
 <datalist id="exp-suggest">
   <option value="Potatoes"><option value="Onions"><option value="Oil"><option value="Gas">
@@ -588,11 +625,11 @@ function todayStr() {
   return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 }
 
-function freshState() {
+function freshState(dateStr) {
   const so = {}, sc = {};
   SUPPLIES.forEach(s => { so[s.id] = 0; sc[s.id] = 0; });
   return {
-    date: todayStr(), closed: false,
+    date: dateStr || selectedDate || todayStr(), closed: false,
     o: { buns:0, cheese:0, batter:0 },
     c: { buns:0, cheese:0, wBuns:0, wCheese:0, cPaddu:0, gPaddu:0, wPaddu:0, cash:0, upi:0, notes:'' },
     so, sc,
@@ -603,26 +640,28 @@ function freshState() {
 
 let S = freshState();
 let saveTimer = null;
+let selectedDate = todayStr();
 
 // ============ FIRESTORE SYNC ============
 function userDoc(docName) {
   return db.collection('users').doc(currentUser.uid).collection('data').doc(docName);
 }
 
-async function loadFromCloud() {
+async function loadFromCloud(dateStr) {
+  const loadDate = dateStr || selectedDate;
   try {
-    // Load today's data
-    const todayDoc = await userDoc('day_' + todayStr()).get();
-    if (todayDoc.exists) {
-      S = todayDoc.data();
+    const doc = await userDoc('day_' + loadDate).get();
+    if (doc.exists) {
+      S = doc.data();
     } else {
-      S = freshState();
+      S = freshState(loadDate);
     }
     updateSyncDot(true);
   } catch (e) {
     // Fallback to localStorage
     const s = localStorage.getItem('wat_v4');
-    if (s) { const p = JSON.parse(s); if (p.date === todayStr()) S = p; }
+    if (s) { const p = JSON.parse(s); if (p.date === loadDate) S = p; else S = freshState(loadDate); }
+    else S = freshState(loadDate);
     updateSyncDot(false);
   }
 }
@@ -721,7 +760,7 @@ function saveAll() {
     S.so[s.id] = gv('so-'+s.id);
     S.sc[s.id] = gv('sc-'+s.id);
   });
-  S.date = todayStr();
+  S.date = selectedDate;
   saveToCloud();
   updateBadges();
   updateRefs();
@@ -1030,26 +1069,60 @@ async function shareWeekly(ws) {
   window.open('https://wa.me/?text='+encodeURIComponent(m),'_blank');
 }
 
-// ============ APP START ============
-async function startApp() {
-  document.getElementById('todayDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+// ============ DATE NAVIGATION ============
+function updateDateDisplay() {
+  const d = new Date(selectedDate + 'T00:00:00');
+  const label = d.toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+  document.getElementById('dateDisplay').textContent = label;
+  document.getElementById('datePicker').value = selectedDate;
+  document.getElementById('todayDate').textContent = label;
 
-  await loadFromCloud();
+  const isToday = selectedDate === todayStr();
+  document.getElementById('todayBtn').style.display = isToday ? 'none' : 'inline-block';
+  document.getElementById('pastBanner').style.display = isToday ? 'none' : 'block';
 
-  // Restore food fields
+  // Don't allow future dates
+  const fwdBtn = document.querySelectorAll('.date-arrow')[1];
+  if (fwdBtn) fwdBtn.style.opacity = isToday ? '0.3' : '1';
+}
+
+function changeDate(offset) {
+  const d = new Date(selectedDate + 'T00:00:00');
+  d.setDate(d.getDate() + offset);
+  const newDate = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  // Don't go to future
+  if (newDate > todayStr()) return;
+  jumpToDate(newDate);
+}
+
+async function jumpToDate(dateStr) {
+  if (!dateStr || dateStr > todayStr()) return;
+  selectedDate = dateStr;
+  updateDateDisplay();
+  await loadFromCloud(selectedDate);
+  restoreFields();
+}
+
+function restoreFields() {
   sv('o-buns',S.o.buns);sv('o-cheese',S.o.cheese);sv('o-batter',S.o.batter);
   sv('c-buns',S.c.buns);sv('c-cheese',S.c.cheese);sv('w-buns',S.c.wBuns);sv('w-cheese',S.c.wCheese);
   sv('c-cpaddu',S.c.cPaddu);sv('c-gpaddu',S.c.gPaddu);sv('w-paddu',S.c.wPaddu);
   sv('c-cash',S.c.cash);sv('c-upi',S.c.upi);
   document.getElementById('c-notes').value=S.c.notes||'';
   sv('t-buns',S.tom.buns);sv('t-cheese',S.tom.cheese);sv('t-batter',S.tom.batter);
-  // Build & restore supplies
-  buildSuppliesUI();
   SUPPLIES.forEach(s=>{sv('so-'+s.id,S.so[s.id]);sv('sc-'+s.id,S.sc[s.id]);});
-  // Restore expenses
   renderExpRows();
   updateBadges();
   updateRefs();
+}
+
+// ============ APP START ============
+async function startApp() {
+  selectedDate = todayStr();
+  buildSuppliesUI();
+  updateDateDisplay();
+  await loadFromCloud(selectedDate);
+  restoreFields();
 }
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
