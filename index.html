@@ -654,11 +654,14 @@ async function loadFromCloud(dateStr) {
     if (doc.exists) {
       S = doc.data();
     } else {
-      S = freshState(loadDate);
+      // Check localStorage before giving up
+      const s = localStorage.getItem('wat_v4');
+      if (s) { const p = JSON.parse(s); if (p.date === loadDate) { S = p; saveToCloud(); } else S = freshState(loadDate); }
+      else S = freshState(loadDate);
     }
     updateSyncDot(true);
   } catch (e) {
-    // Fallback to localStorage
+    // Offline fallback to localStorage
     const s = localStorage.getItem('wat_v4');
     if (s) { const p = JSON.parse(s); if (p.date === loadDate) S = p; else S = freshState(loadDate); }
     else S = freshState(loadDate);
