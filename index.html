@@ -378,15 +378,15 @@ body {
     <h3>Opening (3 AM)</h3>
     <div class="row">
       <div><span class="row-label">Pav (Buns)</span></div>
-      <div><input type="number" class="row-input" id="o-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="o-buns" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Cheese Slices</span></div>
-      <div><input type="number" class="row-input" id="o-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="o-cheese" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Paddu Batter</span></div>
-      <div><input type="number" class="row-input" id="o-batter" placeholder="0" inputmode="decimal" step="0.5" onchange="saveAll()"><span class="row-unit">litres</span></div>
+      <div><input type="number" class="row-input" id="o-batter" placeholder="0" inputmode="decimal" step="0.5" oninput="saveAll()"><span class="row-unit">litres</span></div>
     </div>
   </div>
 
@@ -394,19 +394,19 @@ body {
     <h3>Closing (12 PM)</h3>
     <div class="row">
       <div><span class="row-label">Buns left</span></div>
-      <div><input type="number" class="row-input" id="c-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="c-buns" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Cheese left</span></div>
-      <div><input type="number" class="row-input" id="c-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="c-cheese" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Wasted buns</span></div>
-      <div><input type="number" class="row-input" id="w-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="w-buns" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Wasted cheese</span></div>
-      <div><input type="number" class="row-input" id="w-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="w-cheese" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
   </div>
 
@@ -414,15 +414,15 @@ body {
     <h3>Paddu Sold (estimate)</h3>
     <div class="row">
       <div><span class="row-label">Classic Paddu</span><br><span class="row-sub">₹50 each</span></div>
-      <div><input type="number" class="row-input" id="c-cpaddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+      <div><input type="number" class="row-input" id="c-cpaddu" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">plates</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Ghee Paddu</span><br><span class="row-sub">₹70 each</span></div>
-      <div><input type="number" class="row-input" id="c-gpaddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+      <div><input type="number" class="row-input" id="c-gpaddu" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">plates</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Paddu Wasted</span><br><span class="row-sub">Plates thrown / spoiled</span></div>
-      <div><input type="number" class="row-input" id="w-paddu" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">plates</span></div>
+      <div><input type="number" class="row-input" id="w-paddu" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">plates</span></div>
     </div>
   </div>
 
@@ -430,11 +430,11 @@ body {
     <h3>Money Collected</h3>
     <div class="row">
       <div><span class="row-label">Cash in hand</span></div>
-      <div><input type="number" class="row-input wide" id="c-cash" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">₹</span></div>
+      <div><input type="number" class="row-input wide" id="c-cash" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">₹</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">UPI total</span></div>
-      <div><input type="number" class="row-input wide" id="c-upi" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">₹</span></div>
+      <div><input type="number" class="row-input wide" id="c-upi" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">₹</span></div>
     </div>
   </div>
 
@@ -443,15 +443,15 @@ body {
     <p class="info">Manager decides — how much for tomorrow?</p>
     <div class="row">
       <div><span class="row-label">Buns</span><br><span class="row-sub" id="ref-buns">Used today: -</span></div>
-      <div><input type="number" class="row-input" id="t-buns" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="t-buns" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Cheese</span><br><span class="row-sub" id="ref-cheese">Used today: -</span></div>
-      <div><input type="number" class="row-input" id="t-cheese" placeholder="0" inputmode="numeric" onchange="saveAll()"><span class="row-unit">pcs</span></div>
+      <div><input type="number" class="row-input" id="t-cheese" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">pcs</span></div>
     </div>
     <div class="row">
       <div><span class="row-label">Batter</span></div>
-      <div><input type="number" class="row-input" id="t-batter" placeholder="0" inputmode="decimal" step="0.5" onchange="saveAll()"><span class="row-unit">litres</span></div>
+      <div><input type="number" class="row-input" id="t-batter" placeholder="0" inputmode="decimal" step="0.5" oninput="saveAll()"><span class="row-unit">litres</span></div>
     </div>
   </div>
 
@@ -459,10 +459,10 @@ body {
     <h3>Notes</h3>
     <textarea id="c-notes" placeholder="Any notes... (rain, low crowd, etc.)"
       style="width:100%; padding:10px; border:2px solid #ddd; border-radius:8px; font-size:14px; resize:vertical; min-height:50px;"
-      onchange="saveAll()"></textarea>
+      oninput="saveAll()"></textarea>
   </div>
 
-  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+  <button class="btn btn-green" onclick="saveAll();saveToCloud(true);goTo('home')">SAVE & GO BACK</button>
 </div>
 
 <!-- ==================== SUPPLIES STOCK ==================== -->
@@ -473,7 +473,7 @@ body {
   </div>
   <p class="info">Enter opening count in the morning, closing count at end of day. System calculates usage.</p>
   <div id="suppliesCards"></div>
-  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+  <button class="btn btn-green" onclick="saveAll();saveToCloud(true);goTo('home')">SAVE & GO BACK</button>
 </div>
 
 <!-- ==================== DAILY EXPENSES ==================== -->
@@ -493,7 +493,7 @@ body {
     </div>
   </div>
 
-  <button class="btn btn-green" onclick="goTo('home')">SAVE & GO BACK</button>
+  <button class="btn btn-green" onclick="saveAll();saveToCloud(true);goTo('home')">SAVE & GO BACK</button>
 </div>
 
 <!-- ==================== REPORT ==================== -->
@@ -669,19 +669,24 @@ async function loadFromCloud(dateStr) {
   }
 }
 
-function saveToCloud() {
+function saveToCloud(immediate) {
   // Always save to localStorage as backup
   localStorage.setItem('wat_v4', JSON.stringify(S));
 
   if (!currentUser) return;
 
-  // Debounce cloud saves
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => {
+  if (immediate) {
     userDoc('day_' + S.date).set(S)
       .then(() => updateSyncDot(true))
-      .catch(() => updateSyncDot(false));
-  }, 1000);
+      .catch(e => { console.error('Save failed:', e); updateSyncDot(false); });
+  } else {
+    saveTimer = setTimeout(() => {
+      userDoc('day_' + S.date).set(S)
+        .then(() => updateSyncDot(true))
+        .catch(e => { console.error('Save failed:', e); updateSyncDot(false); });
+    }, 1000);
+  }
 }
 
 function updateSyncDot(online) {
@@ -783,8 +788,8 @@ function addExp(name, amount) {
   const row = document.createElement('div');
   row.className = 'exp-row';
   row.innerHTML = `
-    <input type="text" class="exp-name" placeholder="Item name" value="${name||''}" list="exp-suggest" onchange="saveExp()">
-    <input type="number" class="exp-amt" placeholder="₹" value="${amount||''}" inputmode="numeric" onchange="saveExp()">
+    <input type="text" class="exp-name" placeholder="Item name" value="${name||''}" list="exp-suggest" oninput="saveExp()">
+    <input type="number" class="exp-amt" placeholder="₹" value="${amount||''}" inputmode="numeric" oninput="saveExp()">
     <button class="exp-del" onclick="this.closest('.exp-row').remove();saveExp()">x</button>
   `;
   list.appendChild(row);
@@ -828,9 +833,9 @@ function buildSuppliesUI() {
       html += `<div class="row">
         <div><span class="row-label">${s.name}</span></div>
         <div style="display:flex;gap:4px;align-items:center;">
-          <input type="number" class="row-input" id="so-${s.id}" placeholder="Open" inputmode="numeric" onchange="saveAll()" style="width:55px;font-size:14px;">
+          <input type="number" class="row-input" id="so-${s.id}" placeholder="Open" inputmode="numeric" oninput="saveAll()" style="width:55px;font-size:14px;">
           <span class="row-unit">→</span>
-          <input type="number" class="row-input" id="sc-${s.id}" placeholder="Close" inputmode="numeric" onchange="saveAll()" style="width:55px;font-size:14px;">
+          <input type="number" class="row-input" id="sc-${s.id}" placeholder="Close" inputmode="numeric" oninput="saveAll()" style="width:55px;font-size:14px;">
         </div>
       </div>`;
     });
