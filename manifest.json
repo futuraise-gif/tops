@@ -1,7 +1,7 @@
 {
-  "name": "We Are Tops",
-  "short_name": "WeAreTops",
-  "description": "Daily tracker for We Are Tops cafe",
+  "name": "TOPS",
+  "short_name": "TOPS",
+  "description": "Daily tracker for TOPS cafe",
   "start_url": "/index.html",
   "display": "standalone",
   "background_color": "#f5f5f5",
@@ -11,12 +11,14 @@
     {
       "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
