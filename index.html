@@ -671,12 +671,12 @@ body {
       <div class="pos-item" onclick="posAddItem('classic_vp')">
         <div class="pos-emoji">🟠</div>
         <div class="pos-name">Classic VP</div>
-        <div class="pos-price">₹30</div>
+        <div class="pos-price">₹40</div>
       </div>
       <div class="pos-item" onclick="posAddItem('cheese_vp')">
         <div class="pos-emoji">🧀</div>
         <div class="pos-name">Cheese VP</div>
-        <div class="pos-price">₹45</div>
+        <div class="pos-price">₹55</div>
       </div>
       <div class="pos-item" onclick="posAddItem('classic_paddu')">
         <div class="pos-emoji">🟤</div>
@@ -873,7 +873,7 @@ function doLogout() {
 document.getElementById('loginPass').addEventListener('keyup', e => { if (e.key === 'Enter') doLogin(); });
 
 // ============ CONFIG ============
-const PRICES = { classic_vp: 30, cheese_vp: 45, classic_paddu: 50, ghee_paddu: 70 };
+const PRICES = { classic_vp: 40, cheese_vp: 55, classic_paddu: 50, ghee_paddu: 70 };
 
 const SUPPLIES = [
   { id: 'vp-pouch', name: 'VP Pouches', cat: 'Serving' },
@@ -1204,8 +1204,8 @@ function renderReport() {
   h += '</div></div>';
 
   h += '<div class="card"><h3>Items Sold</h3>';
-  if(c.classicVP>0) h+=`<div class="brow"><span>Classic VP x${c.classicVP}</span><strong>₹${c.classicVP*30}</strong></div>`;
-  if(c.cheeseVP>0) h+=`<div class="brow"><span>Cheese VP x${c.cheeseVP}</span><strong>₹${c.cheeseVP*45}</strong></div>`;
+  if(c.classicVP>0) h+=`<div class="brow"><span>Classic VP x${c.classicVP}</span><strong>₹${c.classicVP*40}</strong></div>`;
+  if(c.cheeseVP>0) h+=`<div class="brow"><span>Cheese VP x${c.cheeseVP}</span><strong>₹${c.cheeseVP*55}</strong></div>`;
   if(c.cPaddu>0) h+=`<div class="brow"><span>Classic Paddu x${c.cPaddu}</span><strong>₹${c.cPaddu*50}</strong></div>`;
   if(c.gPaddu>0) h+=`<div class="brow"><span>Ghee Paddu x${c.gPaddu}</span><strong>₹${c.gPaddu*70}</strong></div>`;
   h+=`<div class="brow" style="border-top:2px solid #eee;padding-top:8px;"><span>Expected</span><strong>₹${c.expRev}</strong></div>`;
@@ -1327,8 +1327,8 @@ function shareWA() {
   const ds=new Date(S.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',month:'short',day:'numeric'});
   let m=`*WE ARE TOPS - Daily Report*\n${ds}\n\n*Revenue: ₹${c.actRev}*\nCash: ₹${cl.cash} | UPI: ₹${cl.upi}\n\n`;
   m+=`*Items (${c.items}):*\n`;
-  if(c.classicVP>0)m+=`Classic VP: ${c.classicVP} (₹${c.classicVP*30})\n`;
-  if(c.cheeseVP>0)m+=`Cheese VP: ${c.cheeseVP} (₹${c.cheeseVP*45})\n`;
+  if(c.classicVP>0)m+=`Classic VP: ${c.classicVP} (₹${c.classicVP*40})\n`;
+  if(c.cheeseVP>0)m+=`Cheese VP: ${c.cheeseVP} (₹${c.cheeseVP*55})\n`;
   if(c.cPaddu>0)m+=`Classic Paddu: ${c.cPaddu} (₹${c.cPaddu*50})\n`;
   if(c.gPaddu>0)m+=`Ghee Paddu: ${c.gPaddu} (₹${c.gPaddu*70})\n`;
   m+=`\nExpected: ₹${c.expRev}\n`;
@@ -1429,8 +1429,8 @@ async function startApp() {
 
 // ============ POS SYSTEM ============
 const POS_ITEMS = {
-  classic_vp: { name: 'Classic VP', price: 30, emoji: '🟠' },
-  cheese_vp: { name: 'Cheese VP', price: 45, emoji: '🧀' },
+  classic_vp: { name: 'Classic VP', price: 40, emoji: '🟠' },
+  cheese_vp: { name: 'Cheese VP', price: 55, emoji: '🧀' },
   classic_paddu: { name: 'Classic Paddu', price: 50, emoji: '🟤' },
   ghee_paddu: { name: 'Ghee Paddu', price: 70, emoji: '✨' }
 };
