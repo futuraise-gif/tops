@@ -561,11 +561,11 @@ body {
   <div class="card">
     <h3>Paddu Sold (estimate)</h3>
     <div class="row">
-      <div><span class="row-label">Classic Paddu</span><br><span class="row-sub">₹50 each</span></div>
+      <div><span class="row-label">Classic Paddu</span><br><span class="row-sub">₹60 each</span></div>
       <div><input type="number" class="row-input" id="c-cpaddu" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">plates</span></div>
     </div>
     <div class="row">
-      <div><span class="row-label">Ghee Paddu</span><br><span class="row-sub">₹70 each</span></div>
+      <div><span class="row-label">Ghee Paddu</span><br><span class="row-sub">₹80 each</span></div>
       <div><input type="number" class="row-input" id="c-gpaddu" placeholder="0" inputmode="numeric" oninput="saveAll()"><span class="row-unit">plates</span></div>
     </div>
     <div class="row">
@@ -681,12 +681,12 @@ body {
       <div class="pos-item" onclick="posAddItem('classic_paddu')">
         <div class="pos-emoji">🟤</div>
         <div class="pos-name">Classic Paddu</div>
-        <div class="pos-price">₹50</div>
+        <div class="pos-price">₹60</div>
       </div>
       <div class="pos-item" onclick="posAddItem('ghee_paddu')">
         <div class="pos-emoji">✨</div>
         <div class="pos-name">Ghee Paddu</div>
-        <div class="pos-price">₹70</div>
+        <div class="pos-price">₹80</div>
       </div>
     </div>
 
@@ -873,7 +873,7 @@ function doLogout() {
 document.getElementById('loginPass').addEventListener('keyup', e => { if (e.key === 'Enter') doLogin(); });
 
 // ============ CONFIG ============
-const PRICES = { classic_vp: 40, cheese_vp: 55, classic_paddu: 50, ghee_paddu: 70 };
+const PRICES = { classic_vp: 40, cheese_vp: 55, classic_paddu: 60, ghee_paddu: 80 };
 
 const SUPPLIES = [
   { id: 'vp-pouch', name: 'VP Pouches', cat: 'Serving' },
@@ -1206,8 +1206,8 @@ function renderReport() {
   h += '<div class="card"><h3>Items Sold</h3>';
   if(c.classicVP>0) h+=`<div class="brow"><span>Classic VP x${c.classicVP}</span><strong>₹${c.classicVP*40}</strong></div>`;
   if(c.cheeseVP>0) h+=`<div class="brow"><span>Cheese VP x${c.cheeseVP}</span><strong>₹${c.cheeseVP*55}</strong></div>`;
-  if(c.cPaddu>0) h+=`<div class="brow"><span>Classic Paddu x${c.cPaddu}</span><strong>₹${c.cPaddu*50}</strong></div>`;
-  if(c.gPaddu>0) h+=`<div class="brow"><span>Ghee Paddu x${c.gPaddu}</span><strong>₹${c.gPaddu*70}</strong></div>`;
+  if(c.cPaddu>0) h+=`<div class="brow"><span>Classic Paddu x${c.cPaddu}</span><strong>₹${c.cPaddu*60}</strong></div>`;
+  if(c.gPaddu>0) h+=`<div class="brow"><span>Ghee Paddu x${c.gPaddu}</span><strong>₹${c.gPaddu*80}</strong></div>`;
   h+=`<div class="brow" style="border-top:2px solid #eee;padding-top:8px;"><span>Expected</span><strong>₹${c.expRev}</strong></div>`;
   if(Math.abs(c.diff)<=10) h+='<div class="alert-ok">Accounts match!</div>';
   else if(c.diff>0) h+=`<div class="alert-warn">₹${c.diff} extra</div>`;
@@ -1329,8 +1329,8 @@ function shareWA() {
   m+=`*Items (${c.items}):*\n`;
   if(c.classicVP>0)m+=`Classic VP: ${c.classicVP} (₹${c.classicVP*40})\n`;
   if(c.cheeseVP>0)m+=`Cheese VP: ${c.cheeseVP} (₹${c.cheeseVP*55})\n`;
-  if(c.cPaddu>0)m+=`Classic Paddu: ${c.cPaddu} (₹${c.cPaddu*50})\n`;
-  if(c.gPaddu>0)m+=`Ghee Paddu: ${c.gPaddu} (₹${c.gPaddu*70})\n`;
+  if(c.cPaddu>0)m+=`Classic Paddu: ${c.cPaddu} (₹${c.cPaddu*60})\n`;
+  if(c.gPaddu>0)m+=`Ghee Paddu: ${c.gPaddu} (₹${c.gPaddu*80})\n`;
   m+=`\nExpected: ₹${c.expRev}\n`;
   if(Math.abs(c.diff)<=10)m+=`Accounts: Match\n`;else if(c.diff>0)m+=`Extra: +₹${c.diff}\n`;else m+=`Short: -₹${Math.abs(c.diff)}\n`;
   if(S.exp.length>0){
@@ -1431,8 +1431,8 @@ async function startApp() {
 const POS_ITEMS = {
   classic_vp: { name: 'Classic VP', price: 40, emoji: '🟠' },
   cheese_vp: { name: 'Cheese VP', price: 55, emoji: '🧀' },
-  classic_paddu: { name: 'Classic Paddu', price: 50, emoji: '🟤' },
-  ghee_paddu: { name: 'Ghee Paddu', price: 70, emoji: '✨' }
+  classic_paddu: { name: 'Classic Paddu', price: 60, emoji: '🟤' },
+  ghee_paddu: { name: 'Ghee Paddu', price: 80, emoji: '✨' }
 };
 
 let posCart = {}; // { item_key: qty }
