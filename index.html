@@ -262,6 +262,99 @@ body {
 .sync-dot.online { background: #4caf50; }
 .sync-dot.offline { background: #ff9800; }
 
+/* POS Styles */
+.pos-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.pos-item {
+  background: white; border: 3px solid #eee; border-radius: 16px;
+  padding: 20px 12px; text-align: center; cursor: pointer;
+  transition: all 0.15s; user-select: none; -webkit-user-select: none;
+}
+.pos-item:active { border-color: #e74c3c; transform: scale(0.95); background: #fff5f5; }
+.pos-item .pos-emoji { font-size: 36px; margin-bottom: 6px; }
+.pos-item .pos-name { font-size: 15px; font-weight: 700; color: #333; }
+.pos-item .pos-price { font-size: 18px; font-weight: 800; color: #e74c3c; margin-top: 4px; }
+
+.pos-cart { background: white; border-radius: 14px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.pos-cart-empty { text-align: center; color: #aaa; font-size: 14px; padding: 20px 0; }
+.pos-cart-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid #f0f0f0;
+}
+.pos-cart-item:last-child { border-bottom: none; }
+.pos-cart-item .ci-name { font-size: 14px; font-weight: 600; flex: 1; }
+.pos-cart-item .ci-price { font-size: 14px; color: #888; margin-right: 10px; }
+.pos-qty-ctrl {
+  display: flex; align-items: center; gap: 0;
+}
+.pos-qty-btn {
+  width: 34px; height: 34px; border: 2px solid #ddd; background: white;
+  font-size: 18px; font-weight: 700; cursor: pointer; color: #333;
+  display: flex; align-items: center; justify-content: center;
+}
+.pos-qty-btn.minus { border-radius: 8px 0 0 8px; color: #e74c3c; }
+.pos-qty-btn.plus { border-radius: 0 8px 8px 0; color: #27ae60; }
+.pos-qty-btn:active { background: #f5f5f5; }
+.pos-qty-val {
+  width: 36px; height: 34px; border-top: 2px solid #ddd; border-bottom: 2px solid #ddd;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; background: #fafafa;
+}
+.pos-cart-total {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 0 4px; border-top: 2px solid #eee; margin-top: 8px;
+}
+.pos-cart-total .ct-label { font-size: 16px; font-weight: 700; }
+.pos-cart-total .ct-amount { font-size: 22px; font-weight: 800; color: #27ae60; }
+
+.pos-pay-row { display: flex; gap: 10px; margin-bottom: 12px; }
+.pos-pay-btn {
+  flex: 1; padding: 14px; border: 3px solid #ddd; border-radius: 12px;
+  background: white; font-size: 15px; font-weight: 700; cursor: pointer;
+  text-align: center; color: #666; transition: all 0.15s;
+}
+.pos-pay-btn.active { border-color: #27ae60; background: #e8f5e9; color: #2e7d32; }
+.pos-pay-btn:active { transform: scale(0.97); }
+
+.pos-place-btn {
+  width: 100%; padding: 18px; border: none; border-radius: 14px;
+  background: #27ae60; color: white; font-size: 18px; font-weight: 800;
+  cursor: pointer; margin-bottom: 16px; letter-spacing: 0.5px;
+}
+.pos-place-btn:active { transform: scale(0.98); opacity: 0.9; }
+.pos-place-btn:disabled { background: #ccc; }
+
+.pos-order-done {
+  text-align: center; padding: 30px 20px; background: #e8f5e9;
+  border-radius: 16px; margin-bottom: 16px;
+}
+.pos-order-done .od-check { font-size: 48px; }
+.pos-order-done .od-num { font-size: 28px; font-weight: 800; color: #2e7d32; margin-top: 8px; }
+.pos-order-done .od-total { font-size: 18px; color: #333; margin-top: 4px; }
+.pos-order-done .od-pay { font-size: 14px; color: #666; margin-top: 2px; }
+
+.pos-orders-list { margin-top: 8px; }
+.pos-order-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px; background: white; border-radius: 10px; margin-bottom: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.pos-order-item .oi-num { font-weight: 800; color: #e74c3c; font-size: 15px; min-width: 36px; }
+.pos-order-item .oi-items { flex: 1; font-size: 13px; color: #555; margin: 0 10px; }
+.pos-order-item .oi-amt { font-weight: 700; font-size: 15px; color: #333; }
+.pos-order-item .oi-pay { font-size: 11px; color: #888; margin-left: 4px; }
+
+.pos-day-summary {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 12px;
+}
+.pos-day-stat {
+  text-align: center; padding: 12px 6px; background: white; border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+.pos-day-stat .ds-val { font-size: 18px; font-weight: 800; }
+.pos-day-stat .ds-label { font-size: 10px; color: #888; margin-top: 2px; text-transform: uppercase; }
+.pos-day-stat.cash-stat .ds-val { color: #2e7d32; }
+.pos-day-stat.upi-stat .ds-val { color: #1565c0; }
+
 /* Date picker */
 .date-picker-bar {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -515,10 +608,66 @@ body {
   <div id="weeklyHist" style="display:none;"></div>
 </div>
 
+<!-- ==================== POS ==================== -->
+<div class="page" id="pg-pos">
+  <div id="posOrderScreen">
+    <div class="section-title">MENU</div>
+    <div class="pos-menu">
+      <div class="pos-item" onclick="posAddItem('classic_vp')">
+        <div class="pos-emoji">🟠</div>
+        <div class="pos-name">Classic VP</div>
+        <div class="pos-price">₹30</div>
+      </div>
+      <div class="pos-item" onclick="posAddItem('cheese_vp')">
+        <div class="pos-emoji">🧀</div>
+        <div class="pos-name">Cheese VP</div>
+        <div class="pos-price">₹45</div>
+      </div>
+      <div class="pos-item" onclick="posAddItem('classic_paddu')">
+        <div class="pos-emoji">🟤</div>
+        <div class="pos-name">Classic Paddu</div>
+        <div class="pos-price">₹50</div>
+      </div>
+      <div class="pos-item" onclick="posAddItem('ghee_paddu')">
+        <div class="pos-emoji">✨</div>
+        <div class="pos-name">Ghee Paddu</div>
+        <div class="pos-price">₹70</div>
+      </div>
+    </div>
+
+    <div class="pos-cart" id="posCart">
+      <div class="pos-cart-empty" id="posCartEmpty">Tap items above to add</div>
+      <div id="posCartItems"></div>
+      <div class="pos-cart-total" id="posCartTotal" style="display:none;">
+        <span class="ct-label">TOTAL</span>
+        <span class="ct-amount" id="posTotal">₹0</span>
+      </div>
+    </div>
+
+    <div class="pos-pay-row">
+      <div class="pos-pay-btn active" id="pay-cash" onclick="posPayMode('cash')">💵 Cash</div>
+      <div class="pos-pay-btn" id="pay-upi" onclick="posPayMode('upi')">📱 UPI</div>
+    </div>
+
+    <button class="pos-place-btn" id="posPlaceBtn" onclick="posPlaceOrder()" disabled>PLACE ORDER</button>
+
+    <div id="posOrderDone" style="display:none;"></div>
+
+    <div class="section-title">TODAY'S ORDERS</div>
+    <div class="pos-day-summary" id="posDaySummary"></div>
+    <div class="pos-orders-list" id="posOrdersList">
+      <div style="text-align:center;color:#aaa;font-size:13px;padding:16px 0;">No orders yet</div>
+    </div>
+  </div>
+</div>
+
 <!-- Bottom Navigation -->
 <div class="bottom-nav">
   <button class="nav-btn active" id="nav-home" onclick="goTo('home')">
     <span class="nav-icon">🏠</span>Home
+  </button>
+  <button class="nav-btn" id="nav-pos" onclick="goTo('pos')">
+    <span class="nav-icon">🛒</span>POS
   </button>
   <button class="nav-btn" id="nav-report" onclick="goTo('report')">
     <span class="nav-icon">📊</span>Report
@@ -676,16 +825,38 @@ function saveToCloud(immediate) {
   if (!currentUser) return;
 
   clearTimeout(saveTimer);
-  if (immediate) {
+  const doSave = () => {
     userDoc('day_' + S.date).set(S)
-      .then(() => updateSyncDot(true))
+      .then(() => {
+        updateSyncDot(true);
+        // If this day was already closed, update history too
+        if (S.closed) updateHistoryRecord();
+      })
       .catch(e => { console.error('Save failed:', e); updateSyncDot(false); });
-  } else {
-    saveTimer = setTimeout(() => {
-      userDoc('day_' + S.date).set(S)
-        .then(() => updateSyncDot(true))
-        .catch(e => { console.error('Save failed:', e); updateSyncDot(false); });
-    }, 1000);
+  };
+
+  if (immediate) { doSave(); }
+  else { saveTimer = setTimeout(doSave, 1000); }
+}
+
+function updateHistoryRecord() {
+  const c = calc();
+  const rec = {
+    date:S.date, o:{...S.o}, c:{...S.c}, so:{...S.so}, sc:{...S.sc},
+    supUsed:{...c.supUsed}, classicVP:c.classicVP, cheeseVP:c.cheeseVP,
+    cPaddu:c.cPaddu, gPaddu:c.gPaddu,
+    rev:c.actRev, expRev:c.expRev, cash:S.c.cash, upi:S.c.upi,
+    items:c.items, bunsUsed:c.bunsUsed, tom:{...S.tom},
+    exp:[...S.exp], totalExp:c.totalExp
+  };
+  // Update localStorage history
+  const hist = JSON.parse(localStorage.getItem('wat_hist_v4') || '[]');
+  const i = hist.findIndex(h => h.date === rec.date);
+  if (i >= 0) hist[i] = rec; else hist.unshift(rec);
+  localStorage.setItem('wat_hist_v4', JSON.stringify(hist));
+  // Update Firestore history
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).collection('history').doc(rec.date).set(rec).catch(() => {});
   }
 }
 
@@ -850,10 +1021,11 @@ function goTo(pg) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('pg-' + pg).classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const navMap = { home: 'nav-home', report: 'nav-report', history: 'nav-history' };
+  const navMap = { home: 'nav-home', pos: 'nav-pos', report: 'nav-report', history: 'nav-history' };
   if (navMap[pg]) document.getElementById(navMap[pg]).classList.add('active');
   if (pg === 'report') renderReport();
   if (pg === 'history') renderHistory();
+  if (pg === 'pos') posLoadOrders();
 }
 
 // ============ BADGES ============
@@ -922,7 +1094,6 @@ function renderReport() {
     h+='<div class="card"><h3>Expenses</h3>';
     S.exp.forEach(e=>{if(e.name||e.amount>0)h+=`<div class="brow"><span>${e.name||'—'}</span><strong style="color:#e74c3c">₹${e.amount}</strong></div>`;});
     h+=`<div class="brow" style="border-top:2px solid #eee;padding-top:8px;"><strong>Total Expenses</strong><strong style="color:#e74c3c">₹${c.totalExp}</strong></div>`;
-    h+=`<div class="profit-box ${c.profit>=0?'pos':'neg'}"><div class="pn">${c.profit>=0?'₹'+c.profit:'-₹'+Math.abs(c.profit)}</div><div class="pl">Today's Profit</div></div>`;
     h+='</div>';
   }
 
@@ -976,9 +1147,8 @@ async function renderHistory() {
   el.innerHTML = hist.slice(0,30).map(h=>{
     const d=new Date(h.date+'T00:00:00');
     const ds=d.toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
-    const pf=h.totalExp>0?` | Profit ₹${h.profit}`:'';
     return `<div class="h-item"><span class="h-rev">₹${h.rev}</span><div class="h-date">${ds}</div>
-    <div class="h-info">${h.items} items | Cash ₹${h.cash} | UPI ₹${h.upi}${pf}</div>
+    <div class="h-info">${h.items} items | Cash ₹${h.cash} | UPI ₹${h.upi}</div>
     ${h.totalExp>0?`<div class="h-info">Expenses: ₹${h.totalExp}</div>`:''}</div>`;
   }).join('');
   renderWeekly(hist);
@@ -1011,8 +1181,7 @@ function renderWeekly(hist) {
     html+=`<div class="stat blue"><div class="sv">₹${tc}</div><div class="sl">Cash</div></div>`;
     html+=`<div class="stat blue"><div class="sv">₹${tu}</div><div class="sl">UPI</div></div></div>`;
     if(te>0){
-      html+=`<div class="stat-grid"><div class="stat red"><div class="sv">₹${te}</div><div class="sl">Expenses</div></div>`;
-      html+=`<div class="stat ${wp>=0?'green':''}" ${wp<0?'style="background:#ffebee"':''}><div class="sv" ${wp<0?'style="color:#c62828"':''}>₹${wp}</div><div class="sl" ${wp<0?'style="color:#c62828"':''}>Profit</div></div></div>`;
+      html+=`<div class="stat-grid" style="grid-template-columns:1fr;"><div class="stat red"><div class="sv">₹${te}</div><div class="sl">Expenses</div></div></div>`;
     }
     const ws2={};SUPPLIES.forEach(s=>{ws2[s.id]=0;});
     days.forEach(d=>{if(d.supUsed)SUPPLIES.forEach(s=>{ws2[s.id]+=(d.supUsed[s.id]||0);});});
@@ -1031,7 +1200,7 @@ function renderWeekly(hist) {
 // ============ WHATSAPP ============
 function shareWA() {
   const c=calc();const cl=S.c;const t=S.tom;
-  const ds=new Date().toLocaleDateString('en-IN',{weekday:'long',month:'short',day:'numeric'});
+  const ds=new Date(S.date+'T00:00:00').toLocaleDateString('en-IN',{weekday:'long',month:'short',day:'numeric'});
   let m=`*WE ARE TOPS - Daily Report*\n${ds}\n\n*Revenue: ₹${c.actRev}*\nCash: ₹${cl.cash} | UPI: ₹${cl.upi}\n\n`;
   m+=`*Items (${c.items}):*\n`;
   if(c.classicVP>0)m+=`Classic VP: ${c.classicVP} (₹${c.classicVP*30})\n`;
@@ -1043,7 +1212,6 @@ function shareWA() {
   if(S.exp.length>0){
     m+=`\n*Expenses (₹${c.totalExp}):*\n`;
     S.exp.forEach(e=>{if(e.name||e.amount>0)m+=`${e.name}: ₹${e.amount}\n`;});
-    m+=`\n*Profit: ₹${c.profit}*\n`;
   }
   m+=`\n*Inventory:*\nBuns: ${S.o.buns}→${cl.buns} left (${c.bunsUsed} used)\nCheese: ${S.o.cheese}→${cl.cheese} left\n`;
   if(cl.wBuns>0)m+=`Wasted buns: ${cl.wBuns}\n`;
@@ -1067,7 +1235,7 @@ async function shareWeekly(ws) {
   const tu=days.reduce((a,d)=>a+d.upi,0);const ti=days.reduce((a,d)=>a+d.items,0);
   const te=days.reduce((a,d)=>a+(d.totalExp||0),0);
   let m=`*WE ARE TOPS - Weekly*\n${wl} (${days.length} days)\n\n*Revenue: ₹${tr}*\nCash: ₹${tc} | UPI: ₹${tu}\nItems: ${ti}\n`;
-  if(te>0)m+=`\n*Expenses: ₹${te}*\n*Profit: ₹${tr-te}*\n`;
+  if(te>0)m+=`\n*Expenses: ₹${te}*\n`;
   m+=`\nClassic VP: ${days.reduce((a,d)=>a+(d.classicVP||0),0)}\nCheese VP: ${days.reduce((a,d)=>a+(d.cheeseVP||0),0)}\n`;
   m+=`Classic Paddu: ${days.reduce((a,d)=>a+(d.cPaddu||0),0)}\nGhee Paddu: ${days.reduce((a,d)=>a+(d.gPaddu||0),0)}\n`;
   const ws2={};SUPPLIES.forEach(s=>{ws2[s.id]=0;});days.forEach(d=>{if(d.supUsed)SUPPLIES.forEach(s=>{ws2[s.id]+=(d.supUsed[s.id]||0);});});
@@ -1131,6 +1299,199 @@ async function startApp() {
   updateDateDisplay();
   await loadFromCloud(selectedDate);
   restoreFields();
+}
+
+// ============ POS SYSTEM ============
+const POS_ITEMS = {
+  classic_vp: { name: 'Classic VP', price: 30, emoji: '🟠' },
+  cheese_vp: { name: 'Cheese VP', price: 45, emoji: '🧀' },
+  classic_paddu: { name: 'Classic Paddu', price: 50, emoji: '🟤' },
+  ghee_paddu: { name: 'Ghee Paddu', price: 70, emoji: '✨' }
+};
+
+let posCart = {}; // { item_key: qty }
+let posPayment = 'cash';
+let posTodayOrders = [];
+
+function posAddItem(key) {
+  posCart[key] = (posCart[key] || 0) + 1;
+  posRenderCart();
+}
+
+function posChangeQty(key, delta) {
+  posCart[key] = (posCart[key] || 0) + delta;
+  if (posCart[key] <= 0) delete posCart[key];
+  posRenderCart();
+}
+
+function posRenderCart() {
+  const items = Object.keys(posCart);
+  const cartEl = document.getElementById('posCartItems');
+  const emptyEl = document.getElementById('posCartEmpty');
+  const totalEl = document.getElementById('posCartTotal');
+  const btn = document.getElementById('posPlaceBtn');
+
+  if (items.length === 0) {
+    emptyEl.style.display = 'block';
+    cartEl.innerHTML = '';
+    totalEl.style.display = 'none';
+    btn.disabled = true;
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  let total = 0;
+  let html = '';
+  items.forEach(key => {
+    const item = POS_ITEMS[key];
+    const qty = posCart[key];
+    const sub = item.price * qty;
+    total += sub;
+    html += `<div class="pos-cart-item">
+      <span class="ci-name">${item.emoji} ${item.name}</span>
+      <span class="ci-price">₹${sub}</span>
+      <div class="pos-qty-ctrl">
+        <button class="pos-qty-btn minus" onclick="posChangeQty('${key}',-1)">−</button>
+        <div class="pos-qty-val">${qty}</div>
+        <button class="pos-qty-btn plus" onclick="posChangeQty('${key}',1)">+</button>
+      </div>
+    </div>`;
+  });
+  cartEl.innerHTML = html;
+  totalEl.style.display = 'flex';
+  document.getElementById('posTotal').textContent = '₹' + total;
+  btn.disabled = false;
+}
+
+function posPayMode(mode) {
+  posPayment = mode;
+  document.getElementById('pay-cash').className = 'pos-pay-btn' + (mode === 'cash' ? ' active' : '');
+  document.getElementById('pay-upi').className = 'pos-pay-btn' + (mode === 'upi' ? ' active' : '');
+}
+
+async function posPlaceOrder() {
+  const items = Object.keys(posCart);
+  if (items.length === 0) return;
+
+  let total = 0;
+  const orderItems = [];
+  items.forEach(key => {
+    const item = POS_ITEMS[key];
+    const qty = posCart[key];
+    total += item.price * qty;
+    orderItems.push({ key, name: item.name, qty, price: item.price, sub: item.price * qty });
+  });
+
+  const orderNum = posTodayOrders.length + 1;
+  const order = {
+    num: orderNum,
+    items: orderItems,
+    total: total,
+    payment: posPayment,
+    time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })
+  };
+
+  posTodayOrders.push(order);
+  await posSaveOrders();
+
+  // Show confirmation
+  const doneEl = document.getElementById('posOrderDone');
+  doneEl.style.display = 'block';
+  doneEl.innerHTML = `<div class="pos-order-done">
+    <div class="od-check">✅</div>
+    <div class="od-num">Order #${orderNum}</div>
+    <div class="od-total">₹${total}</div>
+    <div class="od-pay">${posPayment === 'cash' ? '💵 Cash' : '📱 UPI'}</div>
+  </div>`;
+
+  // Clear cart
+  posCart = {};
+  posRenderCart();
+  posRenderOrders();
+
+  // Auto-hide confirmation after 3 seconds
+  setTimeout(() => { doneEl.style.display = 'none'; }, 3000);
+}
+
+function posRenderOrders() {
+  const listEl = document.getElementById('posOrdersList');
+  const summaryEl = document.getElementById('posDaySummary');
+
+  if (posTodayOrders.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center;color:#aaa;font-size:13px;padding:16px 0;">No orders yet</div>';
+    summaryEl.innerHTML = '';
+    return;
+  }
+
+  // Summary
+  const totalRev = posTodayOrders.reduce((s, o) => s + o.total, 0);
+  const cashTotal = posTodayOrders.filter(o => o.payment === 'cash').reduce((s, o) => s + o.total, 0);
+  const upiTotal = posTodayOrders.filter(o => o.payment === 'upi').reduce((s, o) => s + o.total, 0);
+  summaryEl.innerHTML = `
+    <div class="pos-day-stat"><div class="ds-val">₹${totalRev}</div><div class="ds-label">${posTodayOrders.length} Orders</div></div>
+    <div class="pos-day-stat cash-stat"><div class="ds-val">₹${cashTotal}</div><div class="ds-label">Cash</div></div>
+    <div class="pos-day-stat upi-stat"><div class="ds-val">₹${upiTotal}</div><div class="ds-label">UPI</div></div>
+  `;
+
+  // Orders list (newest first)
+  listEl.innerHTML = [...posTodayOrders].reverse().map(o => {
+    const itemsStr = o.items.map(i => i.qty + 'x ' + i.name).join(', ');
+    return `<div class="pos-order-item">
+      <span class="oi-num">#${o.num}</span>
+      <span class="oi-items">${itemsStr}<br><span style="font-size:11px;color:#aaa;">${o.time}</span></span>
+      <span class="oi-amt">₹${o.total}</span>
+      <span class="oi-pay">${o.payment === 'cash' ? '💵' : '📱'}</span>
+    </div>`;
+  }).join('');
+}
+
+async function posSaveOrders() {
+  const dateKey = todayStr();
+  // Save to localStorage
+  localStorage.setItem('pos_orders_' + dateKey, JSON.stringify(posTodayOrders));
+
+  // Save to Firestore
+  if (!currentUser) return;
+  try {
+    await db.collection('users').doc(currentUser.uid).collection('pos_orders').doc(dateKey).set({
+      date: dateKey,
+      orders: posTodayOrders,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    updateSyncDot(true);
+  } catch (e) {
+    console.error('POS save failed:', e);
+    updateSyncDot(false);
+  }
+}
+
+async function posLoadOrders() {
+  const dateKey = todayStr();
+  if (!currentUser) {
+    const stored = localStorage.getItem('pos_orders_' + dateKey);
+    if (stored) posTodayOrders = JSON.parse(stored);
+    posRenderOrders();
+    return;
+  }
+
+  try {
+    const doc = await db.collection('users').doc(currentUser.uid).collection('pos_orders').doc(dateKey).get();
+    if (doc.exists && doc.data().orders) {
+      posTodayOrders = doc.data().orders;
+    } else {
+      // Fallback to localStorage
+      const stored = localStorage.getItem('pos_orders_' + dateKey);
+      if (stored) posTodayOrders = JSON.parse(stored);
+      else posTodayOrders = [];
+    }
+    updateSyncDot(true);
+  } catch (e) {
+    const stored = localStorage.getItem('pos_orders_' + dateKey);
+    if (stored) posTodayOrders = JSON.parse(stored);
+    else posTodayOrders = [];
+    updateSyncDot(false);
+  }
+  posRenderOrders();
 }
 
 if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
