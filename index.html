@@ -401,6 +401,26 @@ body {
 .emp-act-btn:active { transform: scale(0.9); }
 .emp-empty { text-align: center; color: #aaa; font-size: 14px; padding: 30px 0; }
 
+/* Fixed Costs */
+.fc-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 1px solid #f0f0f0;
+}
+.fc-item:last-child { border-bottom: none; }
+.fc-icon { font-size: 22px; margin-right: 10px; }
+.fc-name { font-size: 14px; font-weight: 600; flex: 1; }
+.fc-amt {
+  width: 90px; padding: 8px 10px; border: 2px solid #ddd; border-radius: 8px;
+  font-size: 16px; text-align: center; font-weight: 600;
+}
+.fc-amt:focus { border-color: #e74c3c; outline: none; }
+.fc-total-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 0; margin-top: 6px; border-top: 2px solid #eee;
+  font-size: 18px; font-weight: 800;
+}
+.fc-total-bar .fc-total-amt { color: #e74c3c; }
+
 /* Date picker */
 .date-picker-bar {
   display: flex; align-items: center; justify-content: center; gap: 10px;
@@ -500,6 +520,15 @@ body {
         <div class="sublabel">Potatoes, Oil, Gas, Onions...</div>
       </div>
       <span class="badge" id="badge-expenses">Open</span>
+    </div>
+
+    <div class="menu-btn" onclick="goTo('fixedcosts')">
+      <div class="icon">📋</div>
+      <div>
+        <div class="label">Monthly Fixed Costs</div>
+        <div class="sublabel">Rent, Light, Gas, Salary, Wifi...</div>
+      </div>
+      <span class="badge" id="badge-fc">₹96.3K</span>
     </div>
 
     <div class="menu-btn" onclick="goTo('employees')">
@@ -714,6 +743,65 @@ body {
       <div style="text-align:center;color:#aaa;font-size:13px;padding:16px 0;">No orders yet</div>
     </div>
   </div>
+</div>
+
+<!-- ==================== FIXED COSTS ==================== -->
+<div class="page" id="pg-fixedcosts">
+  <div class="back-bar">
+    <button class="back-btn" onclick="goTo('home')">← Back</button>
+    <span class="back-title">Monthly Fixed Costs</span>
+  </div>
+  <p class="info">Update your monthly fixed expenses here. These are saved and shown in reports.</p>
+
+  <div class="card">
+    <h3>Fixed Monthly Expenses</h3>
+    <div class="fc-item">
+      <span class="fc-icon">🏠</span>
+      <span class="fc-name">Rent</span>
+      <input type="number" class="fc-amt" id="fc-rent" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div class="fc-item">
+      <span class="fc-icon">💡</span>
+      <span class="fc-name">Light Bill</span>
+      <input type="number" class="fc-amt" id="fc-light" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div class="fc-item">
+      <span class="fc-icon">🔥</span>
+      <span class="fc-name">Gas Bill</span>
+      <input type="number" class="fc-amt" id="fc-gas" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div class="fc-item">
+      <span class="fc-icon">🧹</span>
+      <span class="fc-name">Dust Cleaning</span>
+      <input type="number" class="fc-amt" id="fc-cleaning" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div class="fc-item">
+      <span class="fc-icon">📶</span>
+      <span class="fc-name">Wifi Bill</span>
+      <input type="number" class="fc-amt" id="fc-wifi" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div class="fc-item">
+      <span class="fc-icon">👥</span>
+      <span class="fc-name">Employee Salary</span>
+      <input type="number" class="fc-amt" id="fc-salary" placeholder="0" inputmode="numeric" oninput="fcSave()">
+    </div>
+    <div id="fcCustomList"></div>
+    <button class="btn-outline" onclick="fcAddCustom()">+ Add More</button>
+    <div class="fc-total-bar">
+      <span>Total / Month</span>
+      <span class="fc-total-amt" id="fcTotalAmt">₹0</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Per Day (approx)</h3>
+    <div style="text-align:center;padding:10px 0;">
+      <div style="font-size:28px;font-weight:800;color:#e74c3c;" id="fcPerDay">₹0</div>
+      <div style="font-size:12px;color:#888;margin-top:4px;">Fixed cost per day (÷ 30 days)</div>
+    </div>
+  </div>
+
+  <button class="btn btn-green" onclick="fcSave();goTo('home')">SAVE & GO BACK</button>
 </div>
 
 <!-- ==================== EMPLOYEES ==================== -->
@@ -1150,6 +1238,7 @@ function goTo(pg) {
   if (pg === 'history') renderHistory();
   if (pg === 'pos') posLoadOrders();
   if (pg === 'employees') { empLoad().then(() => empRender()); }
+  if (pg === 'fixedcosts') { fcLoad().then(() => fcRestore()); }
 }
 
 // ============ BADGES ============
@@ -1425,6 +1514,8 @@ async function startApp() {
   restoreFields();
   await empLoad();
   empUpdateBadge();
+  await fcLoad();
+  fcUpdateBadge();
 }
 
 // ============ POS SYSTEM ============
@@ -1618,6 +1709,115 @@ async function posLoadOrders() {
     updateSyncDot(false);
   }
   posRenderOrders();
+}
+
+// ============ FIXED COSTS ============
+let fixedCosts = {
+  rent: 25000, light: 6000, gas: 3000, cleaning: 800, wifi: 500, salary: 61000, custom: []
+};
+
+async function fcLoad() {
+  if (!currentUser) {
+    const stored = localStorage.getItem('wat_fixedcosts');
+    if (stored) fixedCosts = JSON.parse(stored);
+    return;
+  }
+  try {
+    const doc = await db.collection('users').doc(currentUser.uid).collection('data').doc('fixedcosts').get();
+    if (doc.exists) {
+      fixedCosts = doc.data();
+      if (!fixedCosts.custom) fixedCosts.custom = [];
+    } else {
+      const stored = localStorage.getItem('wat_fixedcosts');
+      if (stored) fixedCosts = JSON.parse(stored);
+    }
+  } catch (e) {
+    const stored = localStorage.getItem('wat_fixedcosts');
+    if (stored) fixedCosts = JSON.parse(stored);
+  }
+  fcUpdateBadge();
+}
+
+function fcRestore() {
+  document.getElementById('fc-rent').value = fixedCosts.rent || '';
+  document.getElementById('fc-light').value = fixedCosts.light || '';
+  document.getElementById('fc-gas').value = fixedCosts.gas || '';
+  document.getElementById('fc-cleaning').value = fixedCosts.cleaning || '';
+  document.getElementById('fc-wifi').value = fixedCosts.wifi || '';
+  document.getElementById('fc-salary').value = fixedCosts.salary || '';
+  // Render custom items
+  const el = document.getElementById('fcCustomList');
+  el.innerHTML = '';
+  if (fixedCosts.custom && fixedCosts.custom.length > 0) {
+    fixedCosts.custom.forEach((c, i) => fcAddCustom(c.name, c.amount, i));
+  }
+  fcUpdateTotal();
+}
+
+function fcAddCustom(name, amount) {
+  const el = document.getElementById('fcCustomList');
+  const div = document.createElement('div');
+  div.className = 'fc-item';
+  div.innerHTML = `
+    <span class="fc-icon">📌</span>
+    <input type="text" style="flex:1;padding:8px 10px;border:2px solid #ddd;border-radius:8px;font-size:14px;font-weight:600;margin-right:8px;"
+      placeholder="Item name" value="${name || ''}" oninput="fcSave()">
+    <input type="number" class="fc-amt" placeholder="0" value="${amount || ''}" inputmode="numeric" oninput="fcSave()">
+    <button class="exp-del" style="margin-left:6px;" onclick="this.closest('.fc-item').remove();fcSave()">x</button>
+  `;
+  el.appendChild(div);
+  if (!name) div.querySelector('input[type=text]').focus();
+}
+
+function fcSave() {
+  fixedCosts.rent = parseInt(document.getElementById('fc-rent').value) || 0;
+  fixedCosts.light = parseInt(document.getElementById('fc-light').value) || 0;
+  fixedCosts.gas = parseInt(document.getElementById('fc-gas').value) || 0;
+  fixedCosts.cleaning = parseInt(document.getElementById('fc-cleaning').value) || 0;
+  fixedCosts.wifi = parseInt(document.getElementById('fc-wifi').value) || 0;
+  fixedCosts.salary = parseInt(document.getElementById('fc-salary').value) || 0;
+  // Custom items
+  fixedCosts.custom = [];
+  document.querySelectorAll('#fcCustomList .fc-item').forEach(row => {
+    const n = row.querySelector('input[type=text]').value.trim();
+    const a = parseInt(row.querySelector('input[type=number]').value) || 0;
+    if (n || a > 0) fixedCosts.custom.push({ name: n, amount: a });
+  });
+
+  localStorage.setItem('wat_fixedcosts', JSON.stringify(fixedCosts));
+  if (currentUser) {
+    db.collection('users').doc(currentUser.uid).collection('data').doc('fixedcosts').set({
+      ...fixedCosts,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }).then(() => updateSyncDot(true)).catch(() => updateSyncDot(false));
+  }
+  fcUpdateTotal();
+  fcUpdateBadge();
+}
+
+function fcGetTotal() {
+  const base = (fixedCosts.rent || 0) + (fixedCosts.light || 0) + (fixedCosts.gas || 0) +
+               (fixedCosts.cleaning || 0) + (fixedCosts.wifi || 0) + (fixedCosts.salary || 0);
+  const custom = (fixedCosts.custom || []).reduce((s, c) => s + (c.amount || 0), 0);
+  return base + custom;
+}
+
+function fcUpdateTotal() {
+  const total = fcGetTotal();
+  document.getElementById('fcTotalAmt').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('fcPerDay').textContent = '₹' + Math.round(total / 30).toLocaleString('en-IN');
+}
+
+function fcUpdateBadge() {
+  const b = document.getElementById('badge-fc');
+  if (!b) return;
+  const total = fcGetTotal();
+  if (total >= 1000) {
+    b.textContent = '₹' + (total / 1000).toFixed(1) + 'K';
+  } else {
+    b.textContent = '₹' + total;
+  }
+  b.className = 'badge done';
 }
 
 // ============ EMPLOYEES ============
